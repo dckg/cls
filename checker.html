@@ -24,12 +24,12 @@
   .wrap{ width:100%; max-width:860px; }
   .card{ background:var(--paper); border-radius:14px; box-shadow:0 24px 60px -30px rgba(33,30,63,.5); overflow:hidden; }
 
-  .masthead{ background:#e6e3f5; padding:20px 30px 0; }
-  .m-row{ display:flex; align-items:center; gap:12px; }
-  .m-logo{ height:58px; width:auto; display:block; }
-  .m-kicker{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:20px; line-height:1.08; letter-spacing:-.015em; }
-  .m-lede{ font-family:"Fraunces",Georgia,serif; font-size:13px; color:#3a3942; margin-top:10px; padding-bottom:14px; border-bottom:1px solid rgba(33,30,63,.14); }
-  .hero{ background:#e6e3f5; padding:16px 30px 20px; }
+  .masthead{ background:#e6e3f5; padding:7mm 11mm 6mm; }
+  .m-row{ display:flex; align-items:center; gap:calc(6mm - 12px); }
+  .m-logo{ height:25.3mm; width:auto; display:block; flex-shrink:0; transform:translateY(20px); }
+  .m-kicker{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:22px; line-height:1.06; letter-spacing:-.01em; }
+  .m-lede{ font-family:"Fraunces",Georgia,serif; font-size:13px; line-height:1.4; color:#3a3942; margin-top:36px; text-align:center; }
+  .hero{ background:#e6e3f5; padding:16px 30px 20px; border-top:1px solid rgba(33,30,63,.12); }
   .eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--indigo); }
   h1{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:27px; line-height:1.08; letter-spacing:-.015em; margin:7px 0 6px; }
   .hero p{ font-size:13.5px; color:#3a3942; line-height:1.5; }
@@ -86,12 +86,17 @@
 
   .foot{ padding:16px 30px 22px; font-size:11px; color:var(--muted); line-height:1.55; border-top:1px solid var(--line); }
   .foot b{ color:var(--ink); }
+  .foot a{ color:inherit; }
+  .frow{ display:flex; gap:12px; margin-bottom:9px; }
+  .frow:last-child{ margin-bottom:0; }
+  .flab{ flex:0 0 88px; font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink); padding-top:2px; }
 
   @media (max-width:600px){
     .hero,.body,.foot{ padding-left:18px; padding-right:18px; }
-    .masthead{ padding:16px 18px 0; }
-    .m-logo{ height:44px; }
-    .m-kicker{ font-size:17px; }
+    .masthead{ padding:6mm 6mm 5mm; }
+    .m-logo{ height:15mm; transform:none; }
+    .m-kicker{ font-size:18px; }
+    .m-lede{ margin-top:14px; }
     h1{ font-size:23px; } .detail{ grid-template-columns:1fr; }
   }
 </style>
@@ -121,12 +126,11 @@
     </div>
 
     <div class="foot">
-      <b>Indicative guide only</b> — not an official eligibility decision; please confirm with CLS. Assumes standard prerequisites; placement tests exempt prerequisites but do not waive units.
-      <b>Course lists are filtered by <span class="meta-ay">current-year</span> availability</b> — the level courses and recognised-course options shown here are only those listed as available in <span class="meta-ay">the current academic year</span> on <b>nusmods.com</b> (checked <span class="meta-checked">recently</span>); see the availability data in this repository.
-      Hindi, Malay &amp; Vietnamese are currently offered only as the <b>second (CLS Level 2)</b> language in Multilingual Communication; Arabic, Bahasa Indonesia &amp; Thai are offered up to <b>CLS Level 4</b>. Language Studies (which needs CLS Level 6) is currently available in Chinese, French, German, Japanese, Korean &amp; Spanish.
-      1 course = 4 units · up to 8 units may be double-counted (NUS policy).
-      <b>Semester tags</b> show when each course runs according to NUSMods timetable data for <span class="meta-ay">the current academic year</span>. NUSMods mirrors NUS EduRec data; Semester 2 offerings can still change before Semester 2 ModReg (around October or November). Actual offerings vary; confirm with CLS.
-      <b>fass.nus.edu.sg/cls/minor-programmes</b>
+      <div class="frow"><span class="flab">Guide status</span><span><b>Indicative only</b> — not an official eligibility decision; always confirm with CLS. Placement tests exempt prerequisites but do not waive units.</span></div>
+      <div class="frow"><span class="flab">Course data</span><span>Only courses listed as available in <span class="meta-ay">the current AY</span> on <b>nusmods.com</b> are shown (checked <span class="meta-checked">recently</span>). Semester tags show when each course runs; Semester 2 offerings can still change before ModReg (October–November).</span></div>
+      <div class="frow"><span class="flab">Languages</span><span><b>Language Studies</b> (to CLS Level 6): Chinese, French, German, Japanese, Korean, Spanish.<br><b>Multilingual Communication</b> — CLS Level 4 language: the six above plus Arabic, Bahasa Indonesia, Thai · CLS Level 2 (second) language only: Hindi, Malay, Vietnamese.</span></div>
+      <div class="frow"><span class="flab">Units</span><span>1 course = 4 units · up to 8 units may be double-counted between minors (NUS policy).</span></div>
+      <div class="frow"><span class="flab">More</span><span><a href="https://fass.nus.edu.sg/cls/minor-programmes"><b>fass.nus.edu.sg/cls/minor-programmes</b></a></span></div>
     </div>
   </div>
 </div>
