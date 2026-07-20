@@ -72,7 +72,7 @@
   .track.depth{ background:var(--lavender-tint); border-top:5px solid var(--lavender); }
   .track.breadth{ background:var(--coral-tint); border-top:5px solid var(--coral); }
 
-  .track-name{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:17px; line-height:1.05; margin-bottom:11px; min-height:2.2em; }
+  .track-name{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:17px; line-height:1.05; margin-bottom:11px; min-height:2.2em; padding-right:24px; }
   .track-name .new{
     font-family:"Hanken Grotesk",sans-serif; font-size:9px; font-weight:700;
     letter-spacing:.12em; text-transform:uppercase; background:var(--coral);
@@ -83,13 +83,25 @@
   .track-sub{ font-size:8px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-top:3px; margin-bottom:10px; }
 
   .xpand{
-    display:none; position:absolute; top:2.5mm; right:2.5mm; z-index:2;
+    display:flex; position:absolute; top:2.5mm; right:2.5mm; z-index:2;
     width:26px; height:26px; align-items:center; justify-content:center;
     background:#fff; border:1.5px solid currentColor; border-radius:50%;
     font-size:16px; line-height:1; cursor:pointer; padding:0; font-family:inherit;
   }
   .depth .xpand{ color:var(--lavender); }
   .breadth .xpand{ color:var(--coral); }
+  .zoom-overlay{ position:fixed; inset:0; background:rgba(33,30,63,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:50; }
+  .zoom-overlay.show{ display:flex; }
+  .zoom-panel{ background:#fff; border-radius:12px; max-width:560px; width:100%; max-height:85vh; overflow:auto; padding:26px 28px; position:relative; }
+  .zoom-panel .track-name{ font-size:26px; line-height:1.15; min-height:0; padding-right:44px; }
+  .zoom-panel .focus{ font-size:19px; min-height:0; }
+  .zoom-panel .reqs li{ font-size:18px; line-height:1.5; padding-left:18px; margin-bottom:10px; }
+  .zoom-panel .reqs li::before{ top:10px; width:7px; height:7px; }
+  .zoom-panel .reqs li.sub{ font-size:17px; padding-left:32px; }
+  .zoom-panel .reqs li.sub::before{ left:18px; }
+  .zoom-panel .outcome p{ font-size:19px; }
+  .zoom-panel .outcome span{ font-size:12px; }
+  .zoom-close{ position:absolute; top:12px; right:12px; width:36px; height:36px; border-radius:50%; border:1.5px solid var(--ink); background:#fff; color:var(--ink); font-size:17px; line-height:1; cursor:pointer; }
 
   .focus{ font-size:12.5px; line-height:1.4; color:#2c2b33; margin-bottom:11px; min-height:1.5em; }
 
@@ -120,19 +132,18 @@
   .brand{ margin-top:8px; padding-top:7px; border-top:1px solid rgba(255,255,255,.16); font-size:9.5px; font-weight:600; color:#fff; letter-spacing:.02em; }
 
   /* CTA band linking to the eligibility checker (web only) */
-  .cta-band{ background:#fff; padding:5mm 11mm 5.5mm; text-align:center; }
-  .cta-btn{
-    display:inline-block; background:var(--coral); color:#fff; text-decoration:none;
-    padding:11px 28px; border-radius:100px; cursor:pointer;
-    box-shadow:0 5px 16px -5px rgba(236,92,52,.6);
-    transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  .cta-band{ background:#fff; padding:4.5mm 11mm; display:flex; align-items:center; justify-content:space-between; gap:6mm;
+    border-top:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); }
+  .cta-q{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:15.5px; color:var(--ink); }
+  .cta-chip{ display:inline-block; flex-shrink:0; background:var(--coral); color:#fff; text-decoration:none;
+    font-size:9.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+    padding:8px 18px; border-radius:2px; }
+  .cta-chip:hover{ background:#d54e28; }
+  .cta-chip .arr{ display:inline-block; transition:transform .15s ease; }
+  .cta-chip:hover .arr{ transform:translateX(3px); }
+  @media screen and (max-width:620px){
+    .cta-band{ flex-direction:column; gap:9px; text-align:center; padding:5mm 6mm; }
   }
-  .cta-btn:hover{ transform:translateY(-2px); box-shadow:0 9px 22px -6px rgba(236,92,52,.7); filter:brightness(1.04); }
-  .cta-btn:active{ transform:translateY(0); box-shadow:0 3px 10px -4px rgba(236,92,52,.6); }
-  .cta-q{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:15px; display:block; line-height:1.15; }
-  .cta-go{ display:block; font-size:9px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; margin-top:3px; color:#ffe1d6; }
-  .cta-go .arr{ display:inline-block; transition:transform .15s ease; }
-  .cta-btn:hover .arr{ transform:translateX(3px); }
   .foot a{ color:inherit; text-decoration:none; }
   .foot-qr{ float:right; width:24mm; height:24mm; background:#fff; padding:2.5mm; border-radius:2px; display:block; margin:1mm 0 1mm 5mm; }
   .foot-qr svg{ width:100%; height:100%; display:block; }
@@ -144,10 +155,6 @@
     .lede{ margin-top:14px; }
     .track{ padding:5mm 3.5mm; }
     .track-name{ font-size:14px; min-height:2.4em; padding-right:26px; }
-    .xpand{ display:flex; }
-    .track .reqs, .track .outcome{ display:none; }
-    .track.open .reqs, .track.open .outcome{ display:block; }
-    .track.open{ grid-column:1 / -1; }
     .focus{ font-size:11px; }
     .reqs li{ font-size:10.5px; }
     .reqs li.sub{ font-size:10px; padding-left:16px; }
@@ -162,6 +169,7 @@
     .sheet{ box-shadow:none; }
     .sheet,.track.depth,.track.breadth,.foot{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
     .cta-band{ display:none; }
+    .xpand,.zoom-overlay{ display:none; }
   }
 </style>
 </head>
@@ -180,7 +188,7 @@
 
   <section class="diptych">
     <article class="track depth">
-      <button class="xpand" type="button" aria-expanded="false" aria-label="Show Language Studies details">+</button>
+      <button class="xpand" type="button" aria-label="Enlarge Language Studies details">+</button>
       <div class="track-name">Minor in Language Studies</div>
       <p class="focus">Study <strong>one CLS language</strong>.</p>
       <ul class="reqs">
@@ -192,7 +200,7 @@
     </article>
 
     <article class="track breadth">
-      <button class="xpand" type="button" aria-expanded="false" aria-label="Show Multilingual Communication details">+</button>
+      <button class="xpand" type="button" aria-label="Enlarge Multilingual Communication details">+</button>
       <div class="track-name">Minor&nbsp;in&nbsp;Multilingual <span style="white-space:nowrap">Communication <span class="new">New</span></span></div>
       <p class="focus">Study <strong>two CLS languages</strong>.</p>
       <ul class="reqs">
@@ -205,10 +213,8 @@
   </section>
 
   <div class="cta-band">
-    <a class="cta-btn" href="checker.html">
-      <span class="cta-q">Which minor(s) do you qualify for?</span>
-      <span class="cta-go">Try the interactive eligibility checker <span class="arr">→</span></span>
-    </a>
+    <p class="cta-q">Which minor(s) do you qualify for?</p>
+    <a class="cta-chip" href="checker.html">Verify your eligibility <span class="arr">→</span></a>
   </div>
 
   <footer class="foot">
@@ -219,22 +225,32 @@
   </footer>
 
 </div>
+<div class="zoom-overlay" id="zoom">
+  <div class="zoom-panel" id="zoom-panel" role="dialog" aria-modal="true">
+    <button class="zoom-close" id="zoom-close" aria-label="Close">✕</button>
+    <div id="zoom-content"></div>
+  </div>
+</div>
 <script>
+var overlay = document.getElementById('zoom');
+var panel = document.getElementById('zoom-panel');
+var content = document.getElementById('zoom-content');
 document.querySelectorAll('.xpand').forEach(function(btn){
   btn.addEventListener('click', function(){
     var track = btn.closest('.track');
-    var opening = !track.classList.contains('open');
-    document.querySelectorAll('.track').forEach(function(t){
-      t.classList.remove('open');
-      var b = t.querySelector('.xpand');
-      b.textContent = '+'; b.setAttribute('aria-expanded','false');
+    panel.className = 'zoom-panel ' + (track.classList.contains('depth') ? 'depth' : 'breadth');
+    content.innerHTML = '';
+    ['.track-name','.focus','.reqs','.outcome'].forEach(function(sel){
+      var el = track.querySelector(sel);
+      if(el) content.appendChild(el.cloneNode(true));
     });
-    if(opening){
-      track.classList.add('open');
-      btn.textContent = '\u2212'; btn.setAttribute('aria-expanded','true');
-    }
+    overlay.classList.add('show');
   });
 });
+function closeZoom(){ overlay.classList.remove('show'); }
+document.getElementById('zoom-close').addEventListener('click', closeZoom);
+overlay.addEventListener('click', function(e){ if(e.target === overlay) closeZoom(); });
+document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeZoom(); });
 </script>
 </body>
 </html>
