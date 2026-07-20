@@ -1,0 +1,78 @@
+# Weekly check of nusmods.com for course-availability changes.
+# If anything changed, this opens a pull request for a human to review and
+# merge — nothing goes live without that click. See MAINTAINERS.md.
+name: Update course availability
+
+on:
+  schedule:
+    - cron: '0 2 * * 1'   # every Monday, 02:00 UTC = 10:00 Singapore time
+  workflow_dispatch: {}    # also runnable by hand from the Actions tab
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the current site
+        uses: actions/checkout@v4
+
+      - name: Set up Node for the tests
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch fresh data from NUSMods
+        id: gen
+        run: |
+          python3 check_availability.py | tee update_summary.txt
+          {
+            echo 'summary<<SUMMARY_EOF'
+            cat update_summary.txt
+            echo 'SUMMARY_EOF'
+          } >> "$GITHUB_OUTPUT"
+          rm update_summary.txt
+
+      - name: Check the checker still works with the new data
+        run: |
+          node tests/test_checker.js
+          node tests/verify_data.js
+
+      - name: Propose the update for human review
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: auto/nusmods-refresh
+          commit-message: "Refresh course availability from NUSMods"
+          title: "Course availability update — please review and merge"
+          labels: automated-update
+          body: |
+            Hello! 👋 This is the site's automatic weekly check of **nusmods.com**.
+
+            NUS has changed which courses are listed as available, and this page
+            proposes the matching update to the eligibility checker at
+            **cls.nusu.town**. Nothing has changed on the live site yet — it
+            only changes if you approve this.
+
+            ## What you need to do (about 1 minute)
+
+            1. Read the summary below. Does anything look clearly wrong — for
+               example, a language suddenly losing **all** its courses?
+            2. If it looks reasonable, scroll down and press the green
+               **"Merge pull request"** button, then **"Confirm merge"**.
+            3. Done — the website updates itself within a few minutes.
+
+            If something looks wrong, **do nothing** — the site keeps running
+            with its current data. See the "When to ask for help" section of
+            [MAINTAINERS.md](../blob/main/MAINTAINERS.md).
+
+            ## Summary of the new data
+
+            ```
+            ${{ steps.gen.outputs.summary }}
+            ```
+
+            All automatic checks near the bottom of this page should show a
+            green ✅ before you merge. If any show a red ❌, don't merge — ask
+            for help instead.

@@ -15,25 +15,41 @@ plus everything **not offered at all** this academic year.
 ## Usage
 
 ```bash
-python3 check_availability.py
+python3 check_availability.py            # current AY, fresh download
+python3 check_availability.py 2027-2028  # explicit AY
+python3 check_availability.py --offline  # reuse the cached module list
 ```
 
-No dependencies beyond the Python 3 standard library. The script downloads and
-caches the NUSMods module list for AY2026/2027 into `data/`, then writes the
-result to `data/minor_availability_ay2627.json` and prints a summary.
+No dependencies beyond the Python 3 standard library. The target academic year
+is derived from today's date (from May onward, the AY starting that August).
+The script downloads the NUSMods module list into `data/` (gitignored), then
+writes two generated files — `data/minor_availability.json` (full availability
+data) and `checker_data.js` (the data the eligibility checker reads) — and
+prints a summary.
+
+Data freshness is automated: a GitHub Action re-runs the script every Monday
+and opens a pull request for human review whenever NUSMods data changed.
+Merging it deploys the site. **See [MAINTAINERS.md](MAINTAINERS.md) for the
+maintainer guide (no technical skills required).**
 
 ## Files
 
-- `check_availability.py` — the checker script, with the minor requirements encoded inline
-- `data/minor_availability_ay2627.json` — generated availability data (Sem 1 / Sem 2 / not offered, per minor)
-- `canvas/nus-language-minors-ay2627.canvas.tsx` — interactive Cursor Canvas view of the same data
+- `check_availability.py` — the checker script; encodes the minor requirements (CLS policy) inline and generates everything below
+- `data/minor_availability.json` — *generated*: availability data (Sem 1 / Sem 2 / not offered, per minor)
+- `checker_data.js` — *generated*: course levels, semester tags and recognised-course options for the eligibility checker
 - `index.html` — standalone interactive eligibility checker for the
   Minor in Language Studies and the Minor in Multilingual Communication: add the relevant CLS
   level courses for each language you plan to complete and it works out which minor(s) you would
-  qualify for, including whether the two can be held together. Open it directly in a browser —
+  qualify for, including whether the two can be held together. Live at
+  [cls.nusu.town](https://cls.nusu.town); also works opened directly in a browser —
   no build step or server needed. Results are based on the current offer of CLS courses and may
   vary according to the availability of the listed courses in each AY and the condition that a
   prescribed number of enrolments is met in those courses. Indicative only — confirm with CLS.
+- `tests/` — headless tests: `test_checker.js` (verdict logic), `verify_data.js` (generated-data consistency)
+- `.github/workflows/update-availability.yml` — the weekly auto-update (opens a PR; a human merges)
+- `wrangler.jsonc` — Cloudflare deployment config (static assets)
+- `MAINTAINERS.md` — plain-English guide to keeping the site current
+- `canvas/nus-language-minors-ay2627.canvas.tsx` — interactive Cursor Canvas view of the same data
 
 ## Key findings (as of 21 Jul 2026)
 

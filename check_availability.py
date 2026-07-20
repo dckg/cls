@@ -1,28 +1,65 @@
 """Check availability of CLS language-minor courses against NUSMods data.
 
-Downloads the NUSMods module list for the target academic year (cached
-locally), then reports which eligible language courses and recognised track
-courses of each Minor in Language Studies run in Semester 1, Semester 2, or
-not at all. Writes the result to data/minor_availability_<ay>.json.
+Downloads the NUSMods module list for the target academic year, then reports
+which eligible language courses and recognised track courses of each Minor in
+Language Studies run in Semester 1, Semester 2, or not at all.
+
+Writes two generated files (both committed to the repo):
+  - data/minor_availability.json  -- full availability data, all 12 minors
+  - checker_data.js               -- the data the eligibility checker
+                                     (index.html) reads: level courses,
+                                     semester tags, recognised courses
+
+The academic year is derived from today's date (from May onward, the AY
+starting that August; before May, the AY already in progress). Override with
+an argument or environment variable, e.g.:
+
+    python3 check_availability.py 2027-2028
+    ACAD_YEAR=2027-2028 python3 check_availability.py
+
+Pass --offline to reuse a previously downloaded module list from data/.
 """
 
+import datetime
 import json
 import os
+import sys
 import urllib.request
 
-ACAD_YEAR = "2026-2027"
+
+def default_acad_year(today=None):
+    today = today or datetime.date.today()
+    if today.month >= 5:  # NUSMods publishes the new AY's data around May
+        return f"{today.year}-{today.year + 1}"
+    return f"{today.year - 1}-{today.year}"
+
+
+args = [a for a in sys.argv[1:] if not a.startswith("-")]
+OFFLINE = "--offline" in sys.argv
+ACAD_YEAR = args[0] if args else os.environ.get("ACAD_YEAR") or default_acad_year()
+AY_SHORT = f"AY{ACAD_YEAR[:4]}/{ACAD_YEAR[7:]}"  # e.g. AY2026/27
 CACHE = f"data/moduleList_{ACAD_YEAR}.json"
 
-if not os.path.exists(CACHE):
+if OFFLINE and os.path.exists(CACHE):
+    print(f"Using cached {CACHE}")
+else:
     url = f"https://api.nusmods.com/v2/{ACAD_YEAR}/moduleList.json"
     print(f"Downloading {url} ...")
     os.makedirs("data", exist_ok=True)
     urllib.request.urlretrieve(url, CACHE)
 
 data = json.load(open(CACHE))
+if len(data) < 1000:
+    sys.exit(f"ERROR: module list for {ACAD_YEAR} has only {len(data)} entries "
+             "- refusing to generate from suspicious data.")
 mods = {m['moduleCode']: m for m in data}
 
+# ---------------------------------------------------------------------------
+# Master lists: the requirements of each Minor in Language Studies.
+# This encodes CLS POLICY (which courses count), not availability, and is the
+# one part of this repo that needs a human update if CLS revises a minor.
 # (code, fallback title, is_language_course)
+# ---------------------------------------------------------------------------
 minors = {
 "Arabic": [
  ("LAR1201","Arabic 1",1),("LAR2201","Arabic 2",1),("LAR3201","Arabic 3",1),
@@ -244,6 +281,31 @@ minors = {
 ],
 }
 
+# ---------------------------------------------------------------------------
+# More CLS policy, used by the eligibility checker (index.html):
+# which course fills each CLS level of each language, per the minor documents.
+# ---------------------------------------------------------------------------
+CHECKER_LEVELS = {
+  'Arabic':           [(1,'LAR1201'),(2,'LAR2201'),(3,'LAR3201'),(4,'LAR3202')],
+  'Bahasa Indonesia': [(1,'LAB1201'),(2,'LAB2201'),(3,'LAB3201'),(4,'LAB3202')],
+  'Chinese':          [(1,'LAC1201'),(2,'LAC2201'),(3,'LAC3201'),(4,'LAC3202'),(5,'LAC4201'),(6,'LAC4202')],
+  'French':           [(1,'LAF1201'),(2,'LAF2201'),(3,'LAF3201'),(4,'LAF3202'),(5,'LAF4201'),(6,'LAF4202')],
+  'German':           [(1,'LAG1201'),(2,'LAG2201'),(3,'LAG3201'),(4,'LAG3202'),(5,'LAG4201'),(6,'LAG4202')],
+  'Japanese':         [(1,'LAJ1201'),(2,'LAJ2201'),(3,'LAJ2202'),(4,'LAJ2203'),(5,'LAJ3201'),(6,'LAJ3202')],
+  'Korean':           [(1,'LAK1201'),(2,'LAK2201'),(3,'LAK3201'),(4,'LAK3202'),(5,'LAK4201'),(6,'LAK4202')],
+  'Spanish':          [(1,'LAS1201'),(2,'LAS2201'),(3,'LAS3201'),(4,'LAS3202'),(5,'LAS4201'),(6,'LAS4202')],
+  'Thai':             [(1,'LAT1201'),(2,'LAT2201'),(3,'LAT3201'),(4,'LAT3202')],
+  'Hindi':            [(1,'LAH1201'),(2,'LAH2201')],
+  'Malay':            [(1,'LAM1201'),(2,'LAM2201'),(3,'LAM3201')],
+  'Vietnamese':       [(1,'LAV1201'),(2,'LAV2201')],
+}
+# Tracks where the Minor in Language Studies (CLS Level 6) is available,
+# i.e. where the checker offers the recognised-course "4 + 1" dropdown.
+LEVEL6_TRACKS = ['Chinese','French','German','Japanese','Korean','Spanish']
+
+# ---------------------------------------------------------------------------
+# Availability report (all 12 minors)
+# ---------------------------------------------------------------------------
 out = {}
 for minor, courses in minors.items():
     sem1, sem2, none = [], [], []
@@ -255,13 +317,72 @@ for minor, courses in minors.items():
         if 1 in sems: sem1.append(item)
         if 2 in sems: sem2.append(item)
         if 1 not in sems and 2 not in sems: none.append(item)
+    if not sem1 and not sem2:
+        sys.exit(f"ERROR: no {minor} course is offered at all in {ACAD_YEAR} "
+                 "- this looks like bad upstream data; refusing to generate.")
     out[minor] = {"sem1": sem1, "sem2": sem2, "notOffered": none}
 
-out_path = "data/minor_availability_ay2627.json"
+out_path = "data/minor_availability.json"
 with open(out_path, "w") as f:
     json.dump(out, f, indent=1)
 print(f"Wrote {out_path}")
 
+# ---------------------------------------------------------------------------
+# Checker data (index.html)
+# ---------------------------------------------------------------------------
+def sems_of(code):
+    m = mods.get(code)
+    return m.get('semesters', []) if m else []
+
+def sem_tag(code):
+    s = sems_of(code)
+    if 1 in s and 2 in s: return 'Sem 1·2'
+    if 1 in s: return 'Sem 1'
+    if 2 in s: return 'Sem 2'
+    return None
+
+courses_js = {l: [[lvl, code] for lvl, code in pairs] for l, pairs in CHECKER_LEVELS.items()}
+sem1_js = {l: [lvl for lvl, code in pairs if 1 in sems_of(code)] for l, pairs in CHECKER_LEVELS.items()}
+sem2_js = {l: [lvl for lvl, code in pairs if 2 in sems_of(code)] for l, pairs in CHECKER_LEVELS.items()}
+
+recog_js = {}
+for track in LEVEL6_TRACKS:
+    entries = []
+    for code, fallback, is_lang in minors[track]:
+        if is_lang: continue
+        tag = sem_tag(code)
+        if not tag: continue  # not offered this AY
+        title = mods[code]['title'] if code in mods else fallback
+        entries.append([code, title, tag])
+    entries.sort(key=lambda e: e[0])
+    recog_js[track] = entries
+
+meta = {
+    "ay": AY_SHORT,
+    "acadYear": ACAD_YEAR,
+    "checked": datetime.date.today().strftime("%-d %b %Y"),
+}
+
+def js(obj):
+    return json.dumps(obj, ensure_ascii=False, indent=2)
+
+with open("checker_data.js", "w") as f:
+    f.write(
+        "// GENERATED FILE - do not edit by hand.\n"
+        "// Regenerate with: python3 check_availability.py\n"
+        f"// Source: NUSMods API, {AY_SHORT}, checked {meta['checked']}.\n"
+        f"const META = {js(meta)};\n"
+        f"const COURSES = {js(courses_js)};\n"
+        f"const SEM1 = {js(sem1_js)};\n"
+        f"const SEM2 = {js(sem2_js)};\n"
+        f"const RECOG = {js(recog_js)};\n"
+    )
+print("Wrote checker_data.js")
+
+# ---------------------------------------------------------------------------
+# Human-readable summary (also used as the pull-request body in CI)
+# ---------------------------------------------------------------------------
+print(f"\nSummary for {AY_SHORT} (NUSMods, checked {meta['checked']}):")
 for minor, v in out.items():
-    missing = ", ".join(c["code"] for c in v["notOffered"]) or "(all listed)"
-    print(f"{minor}: Sem1 {len(v['sem1'])}, Sem2 {len(v['sem2'])}, not offered: {missing}")
+    missing = ", ".join(c["code"] for c in v["notOffered"]) or "(all listed courses offered)"
+    print(f"- {minor}: {len(v['sem1'])} courses in Sem 1, {len(v['sem2'])} in Sem 2 | not offered: {missing}")
