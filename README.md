@@ -27,6 +27,13 @@ result to `data/minor_availability_ay2627.json` and prints a summary.
 - `check_availability.py` — the checker script, with the minor requirements encoded inline
 - `data/minor_availability_ay2627.json` — generated availability data (Sem 1 / Sem 2 / not offered, per minor)
 - `canvas/nus-language-minors-ay2627.canvas.tsx` — interactive Cursor Canvas view of the same data
+- `CLS_Minor_Eligibility_Checker.html` — standalone interactive eligibility checker for the
+  Minor in Language Studies and the Minor in Multilingual Communication: add the relevant CLS
+  level courses for each language you plan to complete and it works out which minor(s) you would
+  qualify for, including whether the two can be held together. Open it directly in a browser —
+  no build step or server needed. Results are based on the current offer of CLS courses and may
+  vary according to the availability of the listed courses in each AY and the condition that a
+  prescribed number of enrolments is met in those courses. Indicative only — confirm with CLS.
 
 ## Key findings (as of 21 Jul 2026)
 
