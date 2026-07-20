@@ -67,12 +67,12 @@
   .pill{ font-size:9px; font-weight:600; background:var(--chip); padding:5px 10px; border-radius:100px; }
 
   /* DIPTYCH */
-  .diptych{ display:grid; grid-template-columns:1fr 1fr; }
+  .diptych{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
   .track{ padding:7mm 6mm; display:flex; flex-direction:column; position:relative; }
   .track.depth{ background:var(--lavender-tint); border-top:5px solid var(--lavender); }
   .track.breadth{ background:var(--coral-tint); border-top:5px solid var(--coral); }
 
-  .track-name{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:17px; line-height:1.05; margin-bottom:11px; min-height:2.2em; padding-right:24px; }
+  .track-name{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:17px; line-height:1.05; margin-bottom:11px; min-height:2.2em; padding-right:20px; }
   .track-name .new{
     font-family:"Hanken Grotesk",sans-serif; font-size:9px; font-weight:700;
     letter-spacing:.12em; text-transform:uppercase; background:var(--coral);
@@ -83,11 +83,12 @@
   .track-sub{ font-size:8px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin-top:3px; margin-bottom:10px; }
 
   .xpand{
-    display:flex; position:absolute; top:2.5mm; right:2.5mm; z-index:2;
-    width:26px; height:26px; align-items:center; justify-content:center;
-    background:#fff; border:1.5px solid currentColor; border-radius:50%;
-    font-size:16px; line-height:1; cursor:pointer; padding:0; font-family:inherit;
+    display:flex; position:absolute; top:2mm; right:2mm; z-index:2;
+    width:22px; height:22px; align-items:center; justify-content:center;
+    background:none; border:none; border-radius:4px; opacity:.5;
+    font-size:14px; line-height:1; cursor:pointer; padding:0; font-family:inherit;
   }
+  .xpand:hover, .xpand:focus-visible{ opacity:1; background:rgba(255,255,255,.65); }
   .depth .xpand{ color:var(--lavender); }
   .breadth .xpand{ color:var(--coral); }
   .zoom-overlay{ position:fixed; inset:0; background:rgba(33,30,63,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:50; }
@@ -101,7 +102,7 @@
   .zoom-panel .reqs li.sub::before{ left:18px; }
   .zoom-panel .outcome p{ font-size:19px; }
   .zoom-panel .outcome span{ font-size:12px; }
-  .zoom-close{ position:absolute; top:12px; right:12px; width:36px; height:36px; border-radius:50%; border:1.5px solid var(--ink); background:#fff; color:var(--ink); font-size:17px; line-height:1; cursor:pointer; }
+  .zoom-close{ position:absolute; top:10px; right:10px; width:28px; height:28px; border-radius:50%; border:1px solid rgba(33,30,63,.4); background:#fff; color:var(--ink); font-size:14px; line-height:1; cursor:pointer; }
 
   .focus{ font-size:12.5px; line-height:1.4; color:#2c2b33; margin-bottom:11px; min-height:1.5em; }
 
@@ -151,10 +152,12 @@
 
   @media screen and (max-width:620px){
     .sheet{ width:100%; min-height:auto; }
-    .logo{ height:18mm; transform:none; }
+    .hero{ padding:6mm 6mm 5mm; }
+    .logo{ height:15mm; transform:none; }
+    .kicker{ font-size:18px; }
     .lede{ margin-top:14px; }
-    .track{ padding:5mm 3.5mm; }
-    .track-name{ font-size:14px; min-height:2.4em; padding-right:26px; }
+    .track{ padding:5mm 4.5mm; }
+    .track-name{ font-size:14px; min-height:2.4em; padding-right:22px; }
     .focus{ font-size:11px; }
     .reqs li{ font-size:10.5px; }
     .reqs li.sub{ font-size:10px; padding-left:16px; }
@@ -188,7 +191,7 @@
 
   <section class="diptych">
     <article class="track depth">
-      <button class="xpand" type="button" aria-label="Enlarge Language Studies details">+</button>
+      <button class="xpand" type="button" aria-label="Enlarge Language Studies details">⤢</button>
       <div class="track-name">Minor in Language Studies</div>
       <p class="focus">Study <strong>one CLS language</strong>.</p>
       <ul class="reqs">
@@ -200,7 +203,7 @@
     </article>
 
     <article class="track breadth">
-      <button class="xpand" type="button" aria-label="Enlarge Multilingual Communication details">+</button>
+      <button class="xpand" type="button" aria-label="Enlarge Multilingual Communication details">⤢</button>
       <div class="track-name">Minor&nbsp;in&nbsp;Multilingual <span style="white-space:nowrap">Communication <span class="new">New</span></span></div>
       <p class="focus">Study <strong>two CLS languages</strong>.</p>
       <ul class="reqs">
