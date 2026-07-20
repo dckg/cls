@@ -61,7 +61,7 @@
 
   .lede{
     font-family:"Fraunces",Georgia,serif; font-size:13px; line-height:1.4;
-    color:#3a3942; margin:11px auto 0; max-width:none; text-align:center; position:relative; z-index:2;
+    color:#3a3942; margin:36px auto 0; max-width:none; text-align:center; position:relative; z-index:2;
   }
   .meta-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
   .pill{ font-size:9px; font-weight:600; background:var(--chip); padding:5px 10px; border-radius:100px; }
@@ -123,8 +123,17 @@
 
   @media (max-width:620px){
     .sheet{ width:100%; min-height:auto; }
-    .diptych{ grid-template-columns:1fr; }
     .logo{ height:18mm; transform:none; }
+    .lede{ margin-top:14px; }
+    .track{ padding:5mm 3.5mm; }
+    .track-name{ font-size:14px; min-height:2.4em; }
+    .focus{ font-size:11px; }
+    .reqs li{ font-size:10.5px; }
+    .reqs li.sub{ font-size:10px; padding-left:16px; }
+    .reqs li.sub::before{ left:9px; }
+    .outcome p{ font-size:11.5px; }
+    .foot-row{ gap:4mm; }
+    .foot-qr{ width:20mm; height:20mm; padding:2mm; }
   }
 
   @page{ size:A5 portrait; margin:0; }
