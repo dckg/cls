@@ -24,7 +24,12 @@
   .wrap{ width:100%; max-width:860px; }
   .card{ background:var(--paper); border-radius:14px; box-shadow:0 24px 60px -30px rgba(33,30,63,.5); overflow:hidden; }
 
-  .hero{ background:#e6e3f5; padding:26px 30px 22px; }
+  .masthead{ background:#e6e3f5; padding:20px 30px 0; }
+  .m-row{ display:flex; align-items:center; gap:12px; }
+  .m-logo{ height:58px; width:auto; display:block; }
+  .m-kicker{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:20px; line-height:1.08; letter-spacing:-.015em; }
+  .m-lede{ font-family:"Fraunces",Georgia,serif; font-size:13px; color:#3a3942; margin-top:10px; padding-bottom:14px; border-bottom:1px solid rgba(33,30,63,.14); }
+  .hero{ background:#e6e3f5; padding:16px 30px 20px; }
   .eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--indigo); }
   h1{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:27px; line-height:1.08; letter-spacing:-.015em; margin:7px 0 6px; }
   .hero p{ font-size:13.5px; color:#3a3942; line-height:1.5; }
@@ -91,8 +96,14 @@
 <body>
 <div class="wrap">
   <div class="card">
+    <div class="masthead">
+      <div class="m-row">
+        <img class="m-logo" src="logo.png" alt="NUS · Centre for Language Studies">
+        <p class="m-kicker"><span style="white-space:nowrap">Two Ways to Minor</span> in Languages</p>
+      </div>
+      <p class="m-lede">Declare one — or <b>both</b>. You can hold both minors by double-counting up to <b>8 units</b> between them.</p>
+    </div>
     <div class="hero">
-      <div class="eyebrow">NUS Centre for Language Studies</div>
       <h1>Which language minor(s) do you qualify for?</h1>
       <p>Add the relevant CLS level courses for each language you plan to complete. The result updates as you go.</p>
     </div>
