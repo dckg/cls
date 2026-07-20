@@ -23,12 +23,19 @@ Pass --offline to reuse a previously downloaded module list from data/.
 import datetime
 import json
 import os
+import re
 import sys
 import urllib.request
 
+try:  # the site's audience is in Singapore; CI runners are on UTC
+    from zoneinfo import ZoneInfo
+    TODAY = datetime.datetime.now(ZoneInfo("Asia/Singapore")).date()
+except Exception:
+    TODAY = datetime.date.today()
+
 
 def default_acad_year(today=None):
-    today = today or datetime.date.today()
+    today = today or TODAY
     if today.month >= 5:  # NUSMods publishes the new AY's data around May
         return f"{today.year}-{today.year + 1}"
     return f"{today.year - 1}-{today.year}"
@@ -323,9 +330,7 @@ for minor, courses in minors.items():
     out[minor] = {"sem1": sem1, "sem2": sem2, "notOffered": none}
 
 out_path = "data/minor_availability.json"
-with open(out_path, "w") as f:
-    json.dump(out, f, indent=1)
-print(f"Wrote {out_path}")
+json_str = json.dumps(out, indent=1)
 
 # ---------------------------------------------------------------------------
 # Checker data (index.html)
@@ -357,27 +362,41 @@ for track in LEVEL6_TRACKS:
     entries.sort(key=lambda e: e[0])
     recog_js[track] = entries
 
-meta = {
-    "ay": AY_SHORT,
-    "acadYear": ACAD_YEAR,
-    "checked": datetime.date.today().strftime("%-d %b %Y"),
-}
-
 def js(obj):
     return json.dumps(obj, ensure_ascii=False, indent=2)
 
-with open("checker_data.js", "w") as f:
-    f.write(
+def render_checker_js(checked):
+    meta = {"ay": AY_SHORT, "acadYear": ACAD_YEAR, "checked": checked}
+    return (
         "// GENERATED FILE - do not edit by hand.\n"
         "// Regenerate with: python3 check_availability.py\n"
-        f"// Source: NUSMods API, {AY_SHORT}, checked {meta['checked']}.\n"
+        f"// Source: NUSMods API, {AY_SHORT}, checked {checked}.\n"
         f"const META = {js(meta)};\n"
         f"const COURSES = {js(courses_js)};\n"
         f"const SEM1 = {js(sem1_js)};\n"
         f"const SEM2 = {js(sem2_js)};\n"
         f"const RECOG = {js(recog_js)};\n"
     )
+
+# Only advance the "checked" stamp when the data itself changed — otherwise
+# every scheduled run would produce a date-only diff and a pointless PR.
+checked = TODAY.strftime("%-d %b %Y")
+if os.path.exists(out_path) and os.path.exists("checker_data.js"):
+    old_json = open(out_path).read()
+    old_js_src = open("checker_data.js").read()
+    m = re.search(r'"checked": "([^"]+)"', old_js_src)
+    if m and old_json == json_str and render_checker_js(m.group(1)) == old_js_src:
+        checked = m.group(1)
+        print(f"No changes since {checked} - keeping existing stamp.")
+
+with open(out_path, "w") as f:
+    f.write(json_str)
+print(f"Wrote {out_path}")
+with open("checker_data.js", "w") as f:
+    f.write(render_checker_js(checked))
 print("Wrote checker_data.js")
+
+meta = {"ay": AY_SHORT, "acadYear": ACAD_YEAR, "checked": checked}
 
 # ---------------------------------------------------------------------------
 # Human-readable summary (also used as the pull-request body in CI)
