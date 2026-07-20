@@ -7,7 +7,7 @@ Language Studies run in Semester 1, Semester 2, or not at all.
 Writes two generated files (both committed to the repo):
   - data/minor_availability.json  -- full availability data, all 12 minors
   - checker_data.js               -- the data the eligibility checker
-                                     (index.html) reads: level courses,
+                                     (checker.html) reads: level courses,
                                      semester tags, recognised courses
 
 The academic year is derived from today's date (from May onward, the AY

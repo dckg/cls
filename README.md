@@ -37,7 +37,9 @@ maintainer guide (no technical skills required).**
 - `check_availability.py` — the checker script; encodes the minor requirements (CLS policy) inline and generates everything below
 - `data/minor_availability.json` — *generated*: availability data (Sem 1 / Sem 2 / not offered, per minor)
 - `checker_data.js` — *generated*: course levels, semester tags and recognised-course options for the eligibility checker
-- `index.html` — standalone interactive eligibility checker for the
+- `index.html` — landing page: the "Two Ways to Minor in Languages" poster (same wording and
+  layout as the printed A5 poster), linking on to the checker
+- `checker.html` — standalone interactive eligibility checker for the
   Minor in Language Studies and the Minor in Multilingual Communication: add the relevant CLS
   level courses for each language you plan to complete and it works out which minor(s) you would
   qualify for, including whether the two can be held together. Live at

@@ -6,7 +6,7 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 
 const dataJs = fs.readFileSync(path.join(root, 'checker_data.js'), 'utf8');
-const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+const html = fs.readFileSync(path.join(root, 'checker.html'), 'utf8');
 const script = html.match(/<script>([\s\S]*)<\/script>/)[1];
 
 function stubEl() {
