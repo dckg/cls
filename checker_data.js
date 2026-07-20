@@ -1,10 +1,10 @@
 // GENERATED FILE - do not edit by hand.
 // Regenerate with: python3 check_availability.py
-// Source: NUSMods API, AY2026/27, checked 21 Jul 2026.
+// Source: NUSMods API, AY2026/27, checked 20 Jul 2026.
 const META = {
   "ay": "AY2026/27",
   "acadYear": "2026-2027",
-  "checked": "21 Jul 2026"
+  "checked": "20 Jul 2026"
 };
 const COURSES = {
   "Arabic": [
