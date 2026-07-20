@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLS Minor Eligibility Checker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Hanken+Grotesk:wght@400..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#211e3f; --muted:#5f5d72;
+    --indigo:#4b3fc0; --indigo-tint:#ecebfb;
+    --coral:#ec5c34; --coral-tint:#fde7de;
+    --gold:#c98a1a; --gold-tint:#f8eccf; --gold-line:#e0a93b;
+    --green:#2e7d54; --green-tint:#e2f2ea;
+    --paper:#ffffff; --line:#e6e4ee;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:#e8e5df; font-family:"Hanken Grotesk",system-ui,sans-serif; font-weight:450;
+    color:var(--ink); display:flex; justify-content:center; padding:24px 12px;
+  }
+  .wrap{ width:100%; max-width:860px; }
+  .card{ background:var(--paper); border-radius:14px; box-shadow:0 24px 60px -30px rgba(33,30,63,.5); overflow:hidden; }
+
+  .hero{ background:#e6e3f5; padding:26px 30px 22px; }
+  .eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--indigo); }
+  h1{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:27px; line-height:1.08; letter-spacing:-.015em; margin:7px 0 6px; }
+  .hero p{ font-size:13.5px; color:#3a3942; line-height:1.5; }
+
+  .body{ padding:22px 30px 26px; }
+  .adder{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
+  select, .btn{ font-family:inherit; font-size:14px; font-weight:600; border-radius:9px; padding:11px 14px; border:1.5px solid var(--line); background:#fff; color:var(--ink); }
+  select{ flex:1; min-width:180px; }
+  .btn{ background:var(--indigo); color:#fff; border-color:var(--indigo); cursor:pointer; }
+  .btn:hover{ filter:brightness(1.07); }
+
+  .langcard{ border:1.5px solid var(--line); border-radius:12px; padding:14px 15px; margin-bottom:12px; }
+  .langhead{ display:flex; align-items:center; justify-content:space-between; margin-bottom:11px; }
+  .langhead .nm{ font-family:"Fraunces",serif; font-weight:600; font-size:17px; }
+  .remove{ background:none; border:none; color:var(--muted); font-size:13px; font-weight:600; cursor:pointer; }
+  .remove:hover{ color:var(--coral); }
+  .levels{ display:flex; flex-wrap:wrap; gap:7px; }
+  .lvbtn{
+    cursor:pointer; user-select:none; border:1.5px solid var(--line); background:#fff;
+    border-radius:8px; padding:6px 9px; text-align:center; line-height:1.15; min-width:64px;
+  }
+  .lvbtn .n{ font-size:12px; font-weight:700; display:block; }
+  .lvbtn .cd{ font-size:9px; color:var(--muted); font-weight:600; }
+  .lvbtn .sem{ display:block; font-size:8.5px; font-weight:700; letter-spacing:.02em; color:#9a97a8; margin-top:2px; }
+  .lvbtn.on .sem{ color:rgba(255,255,255,.78); }
+  .lvbtn.on{ background:var(--indigo); border-color:var(--indigo); color:#fff; }
+  .lvbtn.on .cd{ color:#d7d3f5; }
+  .lvbtn.on.k2{ background:var(--gold-line); border-color:var(--gold-line); } .lvbtn.on.k2 .cd{color:#5c4406;}
+  .lvbtn.on.k4{ background:var(--coral); border-color:var(--coral); } .lvbtn.on.k4 .cd{color:#fadfd4;}
+  .recog{ margin-top:10px; font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:7px; }
+  .recog input{ width:15px; height:15px; accent-color:var(--indigo); }
+  .b2only{ font-size:10.5px; color:var(--gold); font-weight:700; margin-top:9px; }
+
+  .empty{ color:var(--muted); font-size:13px; font-style:italic; padding:6px 0 14px; }
+
+  /* result */
+  .result{ margin-top:8px; border-radius:12px; padding:18px 20px; }
+  .result .verdict{ font-family:"Fraunces",serif; font-weight:600; font-size:22px; line-height:1.15; }
+  .result .expl{ font-size:13px; line-height:1.55; margin-top:8px; }
+  .result.both{ background:var(--gold-tint); border:2px solid var(--gold-line); } .result.both .verdict{ color:#8a5e05; }
+  .result.one{ background:var(--green-tint); border:1.5px solid #b8ddc8; } .result.one .verdict{ color:var(--green); }
+  .result.either{ background:var(--indigo-tint); border:1.5px solid #cfcbf3; } .result.either .verdict{ color:var(--indigo); }
+  .result.none{ background:#f3f2f6; border:1.5px solid var(--line); } .result.none .verdict{ color:var(--muted); }
+
+  .detail{ margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .mbox{ background:#fff; border-radius:10px; padding:12px 13px; border:1px solid var(--line); }
+  .mbox h4{ font-size:11px; letter-spacing:.06em; text-transform:uppercase; margin-bottom:6px; }
+  .mbox.ls h4{ color:var(--indigo); } .mbox.mc h4{ color:var(--coral); }
+  .mbox .st{ font-size:12.5px; line-height:1.45; }
+  .mbox .yes{ color:var(--green); font-weight:700; } .mbox .no{ color:var(--muted); }
+  .tip{ margin-top:12px; font-size:12.5px; line-height:1.5; background:#fff; border-left:3px solid var(--indigo); border-radius:6px; padding:9px 12px; }
+  .tip b{ color:var(--ink); }
+  .fineprint{ margin-top:12px; font-size:11px; color:var(--muted); line-height:1.5; font-style:italic; }
+
+  .foot{ padding:16px 30px 22px; font-size:11px; color:var(--muted); line-height:1.55; border-top:1px solid var(--line); }
+  .foot b{ color:var(--ink); }
+
+  @media (max-width:600px){
+    .hero,.body,.foot{ padding-left:18px; padding-right:18px; }
+    h1{ font-size:23px; } .detail{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="hero">
+      <div class="eyebrow">NUS Centre for Language Studies</div>
+      <h1>Which language minor(s) do you qualify for?</h1>
+      <p>Add the relevant CLS level courses for each language you plan to complete. The result updates as you go.</p>
+    </div>
+
+    <div class="body">
+      <div class="adder">
+        <select id="langsel"></select>
+        <button class="btn" id="addbtn">Add language</button>
+      </div>
+      <div id="cards"></div>
+      <div id="result"></div>
+    </div>
+
+    <div class="foot">
+      <b>Indicative guide only</b> — not an official eligibility decision; please confirm with CLS. Assumes standard prerequisites; placement tests exempt prerequisites but do not waive units.
+      Hindi, Malay &amp; Vietnamese are currently offered only as the <b>second (CLS Level 2)</b> language in Multilingual Communication; Arabic, Bahasa Indonesia &amp; Thai are offered up to <b>CLS Level 4</b>. Language Studies (which needs CLS Level 6) is currently available in Chinese, French, German, Japanese, Korean &amp; Spanish.
+      1 course = 4 units · up to 8 units may be double-counted (NUS policy).
+      <b>Semester tags</b> are read from the Semester 1, AY2026/27 vacancy report (as at 17 Jul 2026) and inferred for Semester 2 by normal progression — a level running in Sem 1 continues one level higher in Sem 2 (so the Level 6 capstone in Chinese, German, Korean &amp; Spanish falls in Sem 2). Actual offerings vary; confirm with CLS.
+      <b>fass.nus.edu.sg/cls/minor-programmes</b>
+    </div>
+  </div>
+</div>
+
+<script>
+const NINE = ['Arabic','Bahasa Indonesia','Chinese','French','German','Japanese','Korean','Spanish','Thai'];
+// levels a student can tick, with course codes
+const COURSES = {
+  'Arabic':          [[1,'LAR1201'],[2,'LAR2201'],[3,'LAR3201'],[4,'LAR3202']],
+  'Bahasa Indonesia':[[1,'LAB1201'],[2,'LAB2201'],[3,'LAB3201'],[4,'LAB3202']],
+  'Chinese':         [[1,'LAC1201'],[2,'LAC2201'],[3,'LAC3201'],[4,'LAC3202'],[5,'LAC4201'],[6,'LAC4202']],
+  'French':          [[1,'LAF1201'],[2,'LAF2201'],[3,'LAF3201'],[4,'LAF3202'],[5,'LAF4201'],[6,'LAF4202']],
+  'German':          [[1,'LAG1201'],[2,'LAG2201'],[3,'LAG3201'],[4,'LAG3202'],[5,'LAG4201'],[6,'LAG4202']],
+  'Japanese':        [[1,'LAJ1201'],[2,'LAJ2201'],[3,'LAJ2202'],[4,'LAJ2203'],[5,'LAJ3201'],[6,'LAJ3202']],
+  'Korean':          [[1,'LAK1201'],[2,'LAK2201'],[3,'LAK3201'],[4,'LAK3202'],[5,'LAK4201'],[6,'LAK4202']],
+  'Spanish':         [[1,'LAS1201'],[2,'LAS2201'],[3,'LAS3201'],[4,'LAS3202'],[5,'LAS4201'],[6,'LAS4202']],
+  'Thai':            [[1,'LAT1201'],[2,'LAT2201'],[3,'LAT3201'],[4,'LAT3202']],
+  'Hindi':           [[1,'LAH1201'],[2,'LAH2201']],
+  'Malay':           [[1,'LAM1201'],[2,'LAM2201'],[3,'LAM3201']],
+  'Vietnamese':      [[1,'LAV1201'],[2,'LAV2201']]
+};
+const ALL = Object.keys(COURSES);
+
+// Minor-eligible levels actually TIMETABLED in Semester 1 (from the Sem 1 AY2026/27
+// vacancy report, as at 17-Jul-26). Sem 2 is inferred: a level running in Sem 1
+// continues one level higher in Sem 2 (e.g. Level 5 in Sem 1 -> Level 6 in Sem 2).
+const SEM1 = {
+  'Arabic':[1,2,3], 'Bahasa Indonesia':[1,2,3,4], 'Chinese':[1,2,3,4,5],
+  'French':[1,2,3,4,5,6], 'German':[1,2,3,5], 'Japanese':[1,2,3,4,5,6],
+  'Korean':[1,2,3,4,5], 'Spanish':[1,2,3,4,5], 'Thai':[1,2,3,4],
+  'Hindi':[1,2], 'Malay':[1,2,3], 'Vietnamese':[1,2]
+};
+
+// state: lang -> { levels:Set<int>, recognised:bool }
+const studied = {};
+
+const $ = s => document.querySelector(s);
+const langsel = $('#langsel'), cards = $('#cards'), resultEl = $('#result');
+
+function refreshSelect(){
+  const avail = ALL.filter(l => !(l in studied));
+  langsel.innerHTML = avail.map(l=>`<option value="${l}">${l}</option>`).join('');
+  langsel.disabled = avail.length===0;
+  $('#addbtn').disabled = avail.length===0;
+}
+
+$('#addbtn').onclick = ()=>{
+  const l = langsel.value; if(!l) return;
+  studied[l] = { levels:new Set(), recognised:false };
+  render();
+};
+
+function removeLang(l){ delete studied[l]; render(); }
+function toggleLevel(l,lvl){ const s=studied[l].levels; s.has(lvl)?s.delete(lvl):s.add(lvl); render(); }
+function toggleRecog(l,v){ studied[l].recognised=v; render(); }
+
+function kClass(lvl){ return lvl>=6?'k6':(lvl>=4?'k4':(lvl>=2?'k2':'')); }
+
+function render(){
+  refreshSelect();
+  const langs = Object.keys(studied);
+  cards.innerHTML = langs.length? '' : '<div class="empty">No languages added yet — add one above to begin.</div>';
+  langs.forEach(l=>{
+    const d = studied[l];
+    const maxOffered = COURSES[l][COURSES[l].length-1][0];
+    const b2 = !NINE.includes(l);
+    const s1set = SEM1[l]||[];
+    const lv = COURSES[l].map(([lvl,code])=>{
+      const on = d.levels.has(lvl);
+      const s1 = s1set.includes(lvl), s2 = s1set.includes(lvl-1);
+      const sem = (s1&&s2)?'Sem 1·2':(s1?'Sem 1':(s2?'Sem 2':'—'));
+      return `<div class="lvbtn ${on?'on '+kClass(lvl):''}" data-l="${l}" data-lvl="${lvl}">
+        <span class="n">Lv ${lvl}</span><span class="cd">${code}</span><span class="sem">${sem}</span></div>`;
+    }).join('');
+    const recog = `<label class="recog"><input type="checkbox" data-recog="${l}" ${d.recognised?'checked':''}>
+       I've also passed a recognised course in the ${l} track (for the 4 + 1 route)</label>`;
+    let note;
+    if(b2) note='<div class="b2only">Offered as a second (CLS Level 2) language in Multilingual Communication.</div>';
+    else if(maxOffered<6) note='<div class="b2only">Currently offered up to CLS Level 4 — eligible as the CLS Level 4 language in Multilingual Communication, but not to Level 6 for Language Studies.</div>';
+    else note=recog;
+    cards.insertAdjacentHTML('beforeend', `
+      <div class="langcard">
+        <div class="langhead"><span class="nm">${l}</span><button class="remove" data-rm="${l}">Remove</button></div>
+        <div class="levels">${lv}</div>
+        ${note}
+      </div>`);
+  });
+
+  // wire events
+  cards.querySelectorAll('.lvbtn').forEach(b=> b.onclick=()=>toggleLevel(b.dataset.l, +b.dataset.lvl));
+  cards.querySelectorAll('[data-rm]').forEach(b=> b.onclick=()=>removeLang(b.dataset.rm));
+  cards.querySelectorAll('[data-recog]').forEach(c=> c.onchange=()=>toggleRecog(c.dataset.recog, c.checked));
+
+  renderResult(analyze());
+}
+
+function metrics(l){
+  const lv=[...studied[l].levels]; return { count:lv.length, max:lv.length?Math.max(...lv):0 };
+}
+
+function analyze(){
+  const langs=Object.keys(studied);
+  const m={}; langs.forEach(l=> m[l]=metrics(l));
+  const lsLangs = langs.filter(l=>{
+    const {count,max}=m[l]; const r=studied[l].recognised;
+    return (count>=5 && max>=6) || (count>=4 && max>=6 && r);
+  });
+  const l4 = langs.filter(l=> NINE.includes(l) && m[l].count>=3 && m[l].max>=4);
+  const l2 = langs.filter(l=> m[l].count>=2 && m[l].max>=2);
+  const canMC = l4.some(a=> l2.some(b=> a!==b));
+  // both: X in lsLangs, Z in l4, Z!=X (level-2 lang = X, allowed)
+  let both=null;
+  for(const X of lsLangs){ for(const Z of l4){ if(Z!==X){ both={X,Z}; break; } } if(both) break; }
+  return {m,langs,lsLangs,l4,l2,canLS:lsLangs.length>0,canMC,both};
+}
+
+// In the "either — but not both" case, find the quickest second language that
+// would unlock both minors: a language from the nine, different from the Level 6
+// language, brought to CLS Level 4 (3+ courses incl. Level 4). Prefers languages
+// the student has already started; among those, the fewest remaining courses.
+function escapeRoute(a){
+  const X = a.lsLangs[0];
+  let best = null;
+  for(const l of NINE){
+    if(l === X) continue;
+    const lv = studied[l] ? [...studied[l].levels] : [];
+    let count = lv.length, max = lv.length ? Math.max(...lv) : 0;
+    const avail = COURSES[l].map(p=>p[0]);
+    const add = [];
+    let nxt = max + 1;
+    while(count < 3 || max < 4){
+      if(!avail.includes(nxt)) break;
+      add.push(nxt); count++; max = Math.max(max, nxt); nxt++;
+    }
+    if(count < 3 || max < 4 || add.length === 0) continue;
+    if(!studied[l]) continue; // only suggest languages the student has already started
+    const cand = { l, add };
+    if(!best || cand.add.length < best.add.length) best = cand;
+  }
+  return best;
+}
+
+function courseCodes(l, levels){
+  return levels.map(lvl => (COURSES[l].find(p=>p[0]===lvl)||[])[1]).filter(Boolean).join(', ');
+}
+
+function renderResult(a){
+  if(a.langs.length===0){ resultEl.innerHTML=''; return; }
+  let cls,verdict,expl;
+  if(a.both){
+    cls='both'; verdict='🎉 You qualify for BOTH minors!';
+    expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8 units).`;
+  } else if(a.canLS && a.canMC){
+    cls='either'; verdict='Either minor — but not both at once';
+    expl=`Your only CLS Level 6 language and your only CLS Level 4 language are the same one. To hold both minors, your <b>CLS Level 4</b> language must be <b>different</b> from your <b>CLS Level 6</b> language — so take a second language (from the nine) up to CLS Level 4.`;
+    const esc = escapeRoute(a);
+    if(esc){
+      const X = a.lsLangs[0];
+      const n = esc.add.length;
+      expl += ` Quickest unlock based on what you’ve already studied: take <b>${esc.l}</b> up to CLS Level 4 — ${n} more course${n>1?'s':''} (${courseCodes(esc.l, esc.add)}) — and you’d qualify for both, with ${esc.l} as your Level 4 language and ${X} double-counting as your Level 2 language.`;
+    }
+  } else if(a.canLS){
+    cls='one'; verdict='✓ Minor in Language Studies';
+    expl=`You meet Language Studies in <b>${a.lsLangs.join(', ')}</b>. To add <b>Multilingual Communication</b>, take a <i>different</i> language (from the nine) up to <b>CLS Level 4</b> — 3 courses — and your Level 6 language fills the Level 2 slot.`;
+  } else if(a.canMC){
+    cls='one'; verdict='✓ Minor in Multilingual Communication';
+    expl=`You meet Multilingual Communication. To add <b>Language Studies</b>, take one language all the way to <b>CLS Level 6</b> (5 courses including Level 6, or 4 + 1 recognised course).`;
+  } else {
+    cls='none'; verdict='Not there yet';
+    expl=nextSteps(a);
+  }
+  let detail=`<div class="detail">
+    <div class="mbox ls"><h4>Language Studies</h4><div class="st">${lsStatus(a)}</div></div>
+    <div class="mbox mc"><h4>Multilingual Communication</h4><div class="st">${mcStatus(a)}</div></div>
+  </div>`;
+  const fineprint = `<div class="fineprint">(Results based on the current offer of CLS courses, and may vary according to the availability of the listed courses in each AY and the condition that a prescribed number of enrolments is met in those courses.)</div>`;
+  resultEl.innerHTML = `<div class="result ${cls}"><div class="verdict">${verdict}</div><div class="expl">${expl}</div>${detail}${fineprint}</div>`;
+}
+
+function lsStatus(a){
+  if(a.lsLangs.length) return `<span class="yes">Met</span> in ${a.lsLangs.join(', ')} — 5 courses incl. CLS Level 6.`;
+  // nearest
+  let best=null;
+  a.langs.forEach(l=>{ const {count,max}=a.m[l]; const need=[]; if(max<6)need.push('reach CLS Level 6'); const c=(count>=5)?0:(5-count); if(c>0)need.push(`${c} more course${c>1?'s':''}`); if(!best||need.length<best.need.length)best={l,need}; });
+  if(!best) return '<span class="no">Add a language to check.</span>';
+  return `<span class="no">Not yet.</span> Closest: <b>${best.l}</b> — ${best.need.length?best.need.join(' + '):'almost there'}.`;
+}
+function mcStatus(a){
+  const hasL4=a.l4.length>0, hasL2=a.l2.length>0;
+  if(hasL4 && a.l2.some(b=>a.l4.some(x=>x!==b))) return `<span class="yes">Met</span> — CLS Level 4 language (${a.l4.join('/')}) + a different CLS Level 2 language.`;
+  const bits=[];
+  bits.push(hasL4? `Level 4 language: <span class="yes">yes</span> (${a.l4.join('/')})` : 'Level 4 language: <span class="no">none yet</span> (a language from the nine, to Level 4)');
+  bits.push(hasL2? `Level 2 language: <span class="yes">yes</span>` : 'Level 2 language: <span class="no">none yet</span> (any language, to Level 2)');
+  return bits.join('<br>');
+}
+function nextSteps(a){
+  return `Keep going! For <b>Language Studies</b>: one language to <b>CLS Level 6</b> (5 courses). For <b>Multilingual Communication</b>: one language (from the nine) to <b>CLS Level 4</b> <i>and</i> a different language to <b>CLS Level 2</b>.`;
+}
+
+render();
+</script>
+</body>
+</html>
