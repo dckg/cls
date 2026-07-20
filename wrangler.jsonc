@@ -1,0 +1,6 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "cls",
+  "compatibility_date": "2026-07-21",
+  "assets": { "directory": "./" }
+}

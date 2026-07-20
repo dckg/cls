@@ -54,8 +54,8 @@
   .lvbtn.on .cd{ color:#d7d3f5; }
   .lvbtn.on.k2{ background:var(--gold-line); border-color:var(--gold-line); } .lvbtn.on.k2 .cd{color:#5c4406;}
   .lvbtn.on.k4{ background:var(--coral); border-color:var(--coral); } .lvbtn.on.k4 .cd{color:#fadfd4;}
-  .recog{ margin-top:10px; font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:7px; }
-  .recog input{ width:15px; height:15px; accent-color:var(--indigo); }
+  .recog{ margin-top:10px; font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .recog select{ flex:1; min-width:220px; font-size:11.5px; font-weight:600; padding:6px 8px; border-radius:7px; }
   .b2only{ font-size:10.5px; color:var(--gold); font-weight:700; margin-top:9px; }
 
   .empty{ color:var(--muted); font-size:13px; font-style:italic; padding:6px 0 14px; }
@@ -108,6 +108,7 @@
 
     <div class="foot">
       <b>Indicative guide only</b> — not an official eligibility decision; please confirm with CLS. Assumes standard prerequisites; placement tests exempt prerequisites but do not waive units.
+      <b>Course lists are filtered by AY2026/27 availability</b> — the level courses and recognised-course options shown here are only those listed as available in AY2026/27 on <b>nusmods.com</b> (checked 21 Jul 2026); see the availability data in this repository.
       Hindi, Malay &amp; Vietnamese are currently offered only as the <b>second (CLS Level 2)</b> language in Multilingual Communication; Arabic, Bahasa Indonesia &amp; Thai are offered up to <b>CLS Level 4</b>. Language Studies (which needs CLS Level 6) is currently available in Chinese, French, German, Japanese, Korean &amp; Spanish.
       1 course = 4 units · up to 8 units may be double-counted (NUS policy).
       <b>Semester tags</b> are read from the Semester 1, AY2026/27 vacancy report (as at 17 Jul 2026) and inferred for Semester 2 by normal progression — a level running in Sem 1 continues one level higher in Sem 2 (so the Level 6 capstone in Chinese, German, Korean &amp; Spanish falls in Sem 2). Actual offerings vary; confirm with CLS.
@@ -145,7 +146,67 @@ const SEM1 = {
   'Hindi':[1,2], 'Malay':[1,2,3], 'Vietnamese':[1,2]
 };
 
-// state: lang -> { levels:Set<int>, recognised:bool }
+// Recognised (non-language) courses of each Level-6 track, for the 4 + 1 route
+// to the Minor in Language Studies. Filtered to courses listed as available in
+// AY2026/27 on NUSMods (see data/minor_availability_ay2627.json in this repo);
+// the semester tag shows when each runs.
+const RECOG = {
+  'Chinese':[
+    ['EL1101E','The Nature of Language','Sem 1·2'],
+    ['EL2101','Structure of Sentences and Meanings','Sem 2'],
+    ['GEC1001','Chinese Music, Language and Literature (in English)','Sem 2'],
+    ['HY1101E','Engaging Asia: A Global History','Sem 1·2'],
+    ['PH2242','Philosophy of Language','Sem 2']
+  ],
+  'French':[
+    ['AH2101','Introduction to Art History','Sem 2'],
+    ['EL1101E','The Nature of Language','Sem 1·2'],
+    ['EL2101','Structure of Sentences and Meanings','Sem 2'],
+    ['HY2245','Empires, Colonies and Imperialism','Sem 2'],
+    ['HY2253','Christianity in World History','Sem 2'],
+    ['PH2242','Philosophy of Language','Sem 2'],
+    ['PH3207','Continental European Philosophy','Sem 1'],
+    ['PS3880H','The Politics of European Integration','Sem 1'],
+    ['SC3101','Social Thought & Social Theory','Sem 1·2']
+  ],
+  'German':[
+    ['EL1101E','The Nature of Language','Sem 1·2'],
+    ['EL2101','Structure of Sentences and Meanings','Sem 2'],
+    ['HY2245','Empires, Colonies and Imperialism','Sem 2'],
+    ['PH2212','Introduction to Continental Philosophy','Sem 1'],
+    ['PH2242','Philosophy of Language','Sem 2'],
+    ['PH3207','Continental European Philosophy','Sem 1'],
+    ['PS3880H','The Politics of European Integration','Sem 1'],
+    ['SC3101','Social Thought & Social Theory','Sem 1·2']
+  ],
+  'Japanese':[
+    ['EL1101E','The Nature of Language','Sem 1·2'],
+    ['EL2101','Structure of Sentences and Meanings','Sem 2'],
+    ['HY1101E','Engaging Asia: A Global History','Sem 1·2'],
+    ['JS2213','Visual Analysis of Japanese Popular Culture','Sem 1'],
+    ['JS2216','Postwar Japanese Film and Anime','Sem 1'],
+    ['JS2225','Marketing and Consumer Culture in Japan','Sem 1'],
+    ['JS2230','Itadakimasu - Food In Japan','Sem 2'],
+    ['JS3213','Alternative Lives in Contemporary Japan','Sem 1'],
+    ['JS4229','Japanese Translation - Theory & Practice','Sem 2'],
+    ['PH2242','Philosophy of Language','Sem 2']
+  ],
+  'Korean':[
+    ['EL1101E','The Nature of Language','Sem 1·2'],
+    ['EL2101','Structure of Sentences and Meanings','Sem 2'],
+    ['HY1101E','Engaging Asia: A Global History','Sem 1·2'],
+    ['PH2242','Philosophy of Language','Sem 2']
+  ],
+  'Spanish':[
+    ['EL1101E','The Nature of Language','Sem 1·2'],
+    ['EL2101','Structure of Sentences and Meanings','Sem 2'],
+    ['HY2253','Christianity in World History','Sem 2'],
+    ['PH2242','Philosophy of Language','Sem 2'],
+    ['PS3880H','The Politics of European Integration','Sem 1']
+  ]
+};
+
+// state: lang -> { levels:Set<int>, recognised:''|course code }
 const studied = {};
 
 const $ = s => document.querySelector(s);
@@ -160,7 +221,7 @@ function refreshSelect(){
 
 $('#addbtn').onclick = ()=>{
   const l = langsel.value; if(!l) return;
-  studied[l] = { levels:new Set(), recognised:false };
+  studied[l] = { levels:new Set(), recognised:'' };
   render();
 };
 
@@ -186,8 +247,10 @@ function render(){
       return `<div class="lvbtn ${on?'on '+kClass(lvl):''}" data-l="${l}" data-lvl="${lvl}">
         <span class="n">Lv ${lvl}</span><span class="cd">${code}</span><span class="sem">${sem}</span></div>`;
     }).join('');
-    const recog = `<label class="recog"><input type="checkbox" data-recog="${l}" ${d.recognised?'checked':''}>
-       I've also passed a recognised course in the ${l} track (for the 4 + 1 route)</label>`;
+    const recogOpts = (RECOG[l]||[]).map(([code,title,sem])=>
+      `<option value="${code}" ${d.recognised===code?'selected':''}>${code} — ${title} (${sem})</option>`).join('');
+    const recog = `<label class="recog">Recognised course in the ${l} track (for the 4 + 1 route):
+       <select data-recog="${l}"><option value="">— none —</option>${recogOpts}</select></label>`;
     let note;
     if(b2) note='<div class="b2only">Offered as a second (CLS Level 2) language in Multilingual Communication.</div>';
     else if(maxOffered<6) note='<div class="b2only">Currently offered up to CLS Level 4 — eligible as the CLS Level 4 language in Multilingual Communication, but not to Level 6 for Language Studies.</div>';
@@ -203,7 +266,7 @@ function render(){
   // wire events
   cards.querySelectorAll('.lvbtn').forEach(b=> b.onclick=()=>toggleLevel(b.dataset.l, +b.dataset.lvl));
   cards.querySelectorAll('[data-rm]').forEach(b=> b.onclick=()=>removeLang(b.dataset.rm));
-  cards.querySelectorAll('[data-recog]').forEach(c=> c.onchange=()=>toggleRecog(c.dataset.recog, c.checked));
+  cards.querySelectorAll('[data-recog]').forEach(c=> c.onchange=()=>toggleRecog(c.dataset.recog, c.value));
 
   renderResult(analyze());
 }
