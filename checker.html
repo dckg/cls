@@ -265,7 +265,11 @@ function renderResult(a){
   if(a.both){
     cls='both'; verdict='🎉 You qualify for BOTH minors!';
     if(a.lsLangs.length>=2){
-      expl=`Declare <b>Language Studies</b> in <b>BOTH</b> languages (double counting of LS Minor-recognised course), <b>OR</b> Language Studies in one <b>PLUS</b> Multilingual Communication in the other, with one as your CLS Level 4 language and the other as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
+      const uses41 = a.lsLangs.slice(0,2).every(l=>{
+        const {count,max} = a.m[l];
+        return !(count>=5 && max>=6) && studied[l].recognised;
+      });
+      expl=`Declare <b>Language Studies</b> in <b>BOTH</b> languages${uses41?' (double counting of LS Minor-recognised course)':''}, <b>OR</b> Language Studies in one <b>PLUS</b> Multilingual Communication in the other, with one as your CLS Level 4 language and the other as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
     } else {
       expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
     }

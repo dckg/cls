@@ -67,11 +67,16 @@ check('Thai at Level 4 gives BOTH (single-LS wording)',
   ['You qualify for BOTH minors', 'Declare Language Studies in Chinese'],
   ['BOTH languages']);
 
-check('two 4+1 languages give BOTH with dual-LS wording',
+check('two 4+1 languages give BOTH with dual-LS wording and double-count note',
   { Korean: {levels:[1,2,4,6], recog:'EL1101E'}, French: {levels:[1,3,4,6], recog:'EL1101E'} },
   ['You qualify for BOTH minors',
-   'Declare Language Studies in BOTH languages',
+   'Declare Language Studies in BOTH languages (double counting of LS Minor-recognised course)',
    'OR Language Studies in one PLUS Multilingual Communication in the other']);
+
+check('two 5-course languages give dual-LS wording without the double-count note',
+  { Korean: [2,3,4,5,6], French: [2,3,4,5,6] },
+  ['Declare Language Studies in BOTH languages,'],
+  ['double counting of LS Minor-recognised course']);
 
 check('LS only (no second language) unchanged',
   { Chinese: [1,2,3,4,5,6] },
