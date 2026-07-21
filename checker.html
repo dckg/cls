@@ -36,6 +36,7 @@
   .hero{ background:#fff; padding:18px 30px 4px; }
   .eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--indigo); }
   h1{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:27px; line-height:1.08; letter-spacing:-.015em; margin:7px 0 6px; }
+  .h1-note{ font-size:50%; font-weight:500; color:var(--muted); letter-spacing:0; white-space:nowrap; }
   .hero p{ font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:4px; }
 
   .body{ padding:22px 30px 26px; }
@@ -130,8 +131,8 @@
     </div>
     <div class="bicolor"><span></span><span></span></div>
     <div class="hero">
-      <h1>CLS Minor Eligibility Checker</h1>
-      <p>Pick a language on each side and tap the courses you plan to complete — the result updates as you go.</p>
+      <h1>CLS Minor Eligibility Checker <span class="h1-note">*valid for <span class="meta-ayfull">AY2026/2027</span></span></h1>
+      <p>Pick a language and its courses on each side to find out.</p>
     </div>
 
     <div class="body">
@@ -168,6 +169,7 @@ const ALL = Object.keys(COURSES);
 
 document.querySelectorAll('.meta-ay').forEach(e => e.textContent = META.ay);
 document.querySelectorAll('.meta-checked').forEach(e => e.textContent = META.checked);
+document.querySelectorAll('.meta-ayfull').forEach(e => e.textContent = 'AY' + META.acadYear.replace('-','/'));
 
 // state: lang -> { levels:Set<int>, recognised:''|course code }
 const studied = {};
@@ -285,18 +287,19 @@ function courseCodes(l, levels){
 
 function renderResult(a){
   if(a.langs.length===0){ resultEl.innerHTML=''; return; }
-  let cls,verdict,expl;
+  let cls,verdict,expl,below='';
   if(a.both){
     cls='both'; verdict='🎉 You qualify for BOTH minors!';
     expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8 units).`;
   } else if(a.canLS && a.canMC){
     cls='either'; verdict='Either minor — but not both at once';
-    expl=`Your only CLS Level 6 language and your only CLS Level 4 language are the same one. To hold both minors, your <b>CLS Level 4</b> language must be <b>different</b> from your <b>CLS Level 6</b> language — so take a second language (from the nine) up to CLS Level 4.`;
+    expl='';
+    below=`To hold both minors, your <b>CLS Level 4</b> language must be <b>different</b> from your <b>CLS Level 6</b> language.`;
     const esc = escapeRoute(a);
     if(esc){
       const X = a.lsLangs[0];
       const n = esc.add.length;
-      expl += ` Quickest unlock based on what you’ve already studied: take <b>${esc.l}</b> up to CLS Level 4 — ${n} more course${n>1?'s':''} (${courseCodes(esc.l, esc.add)}) — and you’d qualify for both, with ${esc.l} as your Level 4 language and ${X} double-counting as your Level 2 language.`;
+      expl = `Quickest unlock based on what you’ve already studied: take <b>${esc.l}</b> up to CLS Level 4 — ${n} more course${n>1?'s':''} (${courseCodes(esc.l, esc.add)}) — and you’d qualify for both, with ${esc.l} as your Level 4 language and ${X} double-counting as your Level 2 language.`;
     }
   } else if(a.canLS){
     cls='one'; verdict='✓ Minor in Language Studies';
@@ -313,7 +316,7 @@ function renderResult(a){
     <div class="mbox mc"><h4>Multilingual Communication</h4><div class="st">${mcStatus(a)}</div></div>
   </div>`;
   const fineprint = `<div class="fineprint">(Results subject to the availability of listed courses each year, and the condition that the minimum prescribed enrolment numbers are met)</div>`;
-  resultEl.innerHTML = `<div class="result ${cls}"><div class="verdict">${verdict}</div><div class="expl">${expl}</div>${detail}${fineprint}</div>`;
+  resultEl.innerHTML = `<div class="result ${cls}"><div class="verdict">${verdict}</div>${expl?`<div class="expl">${expl}</div>`:''}${detail}${below?`<div class="expl">${below}</div>`:''}${fineprint}</div>`;
 }
 
 function lsStatus(a){
