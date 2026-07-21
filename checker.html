@@ -74,6 +74,17 @@
 
   .empty{ color:var(--muted); font-size:13px; font-style:italic; padding:6px 0 14px; }
 
+  .coach{ position:fixed; inset:0; z-index:60; }
+  .coach[hidden]{ display:none; }
+  .coach-hole{ position:absolute; border-radius:10px; box-shadow:0 0 0 200vmax rgba(33,30,63,.62); transition:left .3s ease, top .3s ease, width .3s ease, height .3s ease; pointer-events:none; }
+  .coach-tip{ position:absolute; max-width:250px; background:#fff; border-radius:10px; padding:12px 14px; box-shadow:0 10px 30px -12px rgba(33,30,63,.7); }
+  .coach-tip p{ font-size:13px; font-weight:600; line-height:1.45; margin-bottom:9px; }
+  .coach-tip .go{ background:var(--ink); color:#fff; border:none; border-radius:7px; padding:7px 14px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+  .coach-skip{ display:block; background:none; border:none; color:var(--muted); font-size:11px; font-weight:600; padding:8px 0 0; text-decoration:underline; cursor:pointer; font-family:inherit; }
+  .coach-tip::before{ content:""; position:absolute; width:12px; height:12px; background:#fff; transform:rotate(45deg); left:26px; }
+  .coach-tip.below::before{ top:-6px; }
+  .coach-tip.above::before{ bottom:-6px; }
+
   .pick{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); margin-bottom:16px; }
   .pcol{ padding:13px 12px 15px; }
   .pa{ background:var(--indigo-tint); }
@@ -166,6 +177,10 @@
   </div>
 </div>
 
+<div class="coach" id="coach" hidden>
+  <div class="coach-hole" id="coach-hole"></div>
+  <div class="coach-tip" id="coach-tip"><p id="coach-text"></p><button class="go" id="coach-next" type="button">Next</button><button class="coach-skip" id="coach-skip" type="button">Don’t show me again</button></div>
+</div>
 <script src="checker_data.js"></script>
 <script>
 // Course data (COURSES, SEM1, SEM2, RECOG, META) comes from checker_data.js,
@@ -356,6 +371,54 @@ render();
     if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
   }catch(e){}
 })();
+try{
+  if(window.matchMedia('(max-width:620px)').matches && !localStorage.getItem('clsCheckerCoachSeen')){
+    var coach = document.getElementById('coach');
+    var hole = document.getElementById('coach-hole');
+    var tip = document.getElementById('coach-tip');
+    var tipText = document.getElementById('coach-text');
+    var nextBtn = document.getElementById('coach-next');
+    var steps = [
+      { sel: '.pa .langpick', text: 'Select a language.', pos: 'below' },
+      { sel: '#col0', text: 'Select the courses.', pos: 'below' }
+    ];
+    var step = -1;
+    function showStep(i){
+      var s = steps[i];
+      var el = s && document.querySelector(s.sel);
+      if(!el){ finishCoach(); return; }
+      el.scrollIntoView({block:'center'});
+      requestAnimationFrame(function(){
+        var r = el.getBoundingClientRect(), pad = 6;
+        hole.style.left = (r.left - pad) + 'px';
+        hole.style.top = (r.top - pad) + 'px';
+        hole.style.width = (r.width + 2*pad) + 'px';
+        hole.style.height = (r.height + 2*pad) + 'px';
+        tip.className = 'coach-tip ' + s.pos;
+        tipText.textContent = s.text;
+        nextBtn.textContent = (i === steps.length - 1) ? 'Got it' : 'Next';
+        tip.style.left = Math.max(12, Math.min(r.left, window.innerWidth - 262)) + 'px';
+        if(s.pos === 'above'){ tip.style.top = ''; tip.style.bottom = (window.innerHeight - r.top + 14) + 'px'; }
+        else { tip.style.bottom = ''; tip.style.top = (r.bottom + pad + 14) + 'px'; }
+      });
+    }
+    function nextStep(){ step++; if(step >= steps.length){ finishCoach(); } else { showStep(step); } }
+    function finishCoach(){
+      coach.hidden = true;
+      document.body.style.overflow = '';
+      window.scrollTo({top:0});
+    }
+    coach.hidden = false;
+    document.body.style.overflow = 'hidden';
+    coach.addEventListener('click', nextStep);
+    document.getElementById('coach-skip').addEventListener('click', function(e){
+      e.stopPropagation();
+      try{ localStorage.setItem('clsCheckerCoachSeen','1'); }catch(err){}
+      finishCoach();
+    });
+    nextStep();
+  }
+}catch(e){}
 </script>
 </body>
 </html>
