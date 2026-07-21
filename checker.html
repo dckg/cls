@@ -26,8 +26,8 @@
 
   .masthead{ background:#e6e3f5; padding:7mm 11mm 6mm; }
   .m-row{ display:flex; align-items:center; gap:calc(6mm - 12px); }
-  .m-logo{ height:25.3mm; width:auto; display:block; flex-shrink:0; transform:translateY(20px); }
-  .m-kicker{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:22px; line-height:1.06; letter-spacing:-.01em; }
+  .m-logo{ width:27.8%; height:auto; display:block; flex-shrink:0; transform:translateY(20px); }
+  .m-kicker{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:22px; line-height:1.06; letter-spacing:-.01em; flex:1; min-width:0; text-align:right; }
   .m-lede{ font-family:"Fraunces",Georgia,serif; font-size:13px; line-height:1.4; color:#3a3942; margin-top:36px; text-align:center; }
   .bicolor{ display:flex; height:5px; }
   .bicolor span{ flex:1; }
@@ -36,7 +36,7 @@
   .hero{ background:#fff; padding:18px 30px 4px; }
   .eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--indigo); }
   h1{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:27px; line-height:1.08; letter-spacing:-.015em; margin:7px 0 6px; }
-  .h1-note{ font-size:50%; font-weight:500; color:var(--muted); letter-spacing:0; white-space:nowrap; }
+  .h1-note{ font-size:11px; font-weight:500; color:var(--muted); letter-spacing:0; white-space:nowrap; }
   .hero p{ font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:4px; }
 
   .body{ padding:22px 30px 26px; }
@@ -112,7 +112,7 @@
     .pcol{ padding:10px 8px 12px; }
     .lvbtn{ min-width:56px; }
     .masthead{ padding:6mm 6mm 5mm; }
-    .m-logo{ height:15mm; transform:none; }
+    .m-logo{ transform:none; }
     .m-kicker{ font-size:18px; }
     .m-lede{ margin-top:14px; }
     h1{ font-size:23px; } .detail{ grid-template-columns:1fr; }
@@ -131,8 +131,8 @@
     </div>
     <div class="bicolor"><span></span><span></span></div>
     <div class="hero">
-      <h1>CLS Minor Eligibility Checker <span class="h1-note">*valid for <span class="meta-ayfull">AY2026/2027</span></span></h1>
-      <p>Pick a language and its courses on each side to find out.</p>
+      <h1>CLS Minor Eligibility Checker <span class="h1-note">*valid for <span class="meta-ay">AY2026/27</span></span></h1>
+      <p>Pick at least one language and its courses to check.</p>
     </div>
 
     <div class="body">
@@ -153,7 +153,7 @@
 
     <div class="foot">
       <div class="frow"><span class="flab">Status guide</span><span><b>Indicative only</b> — always confirm course availability with CLS.</span></div>
-      <div class="frow"><span class="flab">Timeline</span><span>Ensure the Minor is added to your Academic Plan Declarations by your fifth semester.</span></div>
+      <div class="frow"><span class="flab">Timeline</span><span>Add the Minor to your Academic Plan by your 5th Sem.</span></div>
       <div class="frow"><span class="flab">Units</span><span>1 CLS course = 4 academic units. Up to 8 units may be double-counted between the LS Minor and the 2nd language for the MC Minor.</span></div>
       <div class="frow"><span class="flab">More</span><span>Find out more at <a href="https://fass.nus.edu.sg/cls/minor-programmes"><b>fass.nus.edu.sg/cls/minor-programmes</b></a></span></div>
     </div>
@@ -169,7 +169,6 @@ const ALL = Object.keys(COURSES);
 
 document.querySelectorAll('.meta-ay').forEach(e => e.textContent = META.ay);
 document.querySelectorAll('.meta-checked').forEach(e => e.textContent = META.checked);
-document.querySelectorAll('.meta-ayfull').forEach(e => e.textContent = 'AY' + META.acadYear.replace('-','/'));
 
 // state: lang -> { levels:Set<int>, recognised:''|course code }
 const studied = {};
@@ -218,7 +217,7 @@ function render(){
   refreshPicks();
   [0,1].forEach(i=>{
     const host = $('#col'+i), l = cols[i].lang;
-    host.innerHTML = l ? colHTML(l) : '<div class="empty">Select a language above — its courses appear here.</div>';
+    host.innerHTML = l ? colHTML(l) : '<div class="empty">Eligible courses will appear here.</div>';
   });
   document.querySelectorAll('.lvbtn').forEach(b=> b.onclick=()=>toggleLevel(b.dataset.l, +b.dataset.lvl));
   document.querySelectorAll('[data-recog]').forEach(cb=> cb.onchange=()=>toggleRecog(cb.dataset.recog, cb.value));
