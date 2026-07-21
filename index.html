@@ -91,14 +91,15 @@
   .xpand:hover, .xpand:focus-visible{ opacity:1; background:rgba(255,255,255,.65); }
   .depth .xpand{ color:var(--lavender); }
   .breadth .xpand{ color:var(--coral); }
-  .tut-overlay{ position:fixed; inset:0; background:rgba(33,30,63,.62); display:flex; align-items:center; justify-content:center; padding:20px; z-index:60; }
-  .tut-overlay[hidden]{ display:none; }
-  .tut-card{ background:#fff; border-radius:12px; max-width:340px; width:100%; padding:20px 22px; }
-  .tut-h{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:18px; margin-bottom:10px; }
-  .tut-line{ font-size:13px; line-height:1.5; margin-bottom:9px; display:flex; gap:9px; }
-  .tut-n{ flex-shrink:0; width:20px; height:20px; border-radius:50%; background:var(--lavender); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:1px; }
-  .tut-line:nth-of-type(3) .tut-n{ background:var(--coral); }
-  .tut-btn{ margin-top:6px; width:100%; background:var(--ink); color:#fff; border:none; border-radius:8px; padding:10px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+  .coach{ position:fixed; inset:0; z-index:60; }
+  .coach[hidden]{ display:none; }
+  .coach-hole{ position:absolute; border-radius:10px; box-shadow:0 0 0 200vmax rgba(33,30,63,.62); transition:left .3s ease, top .3s ease, width .3s ease, height .3s ease; pointer-events:none; }
+  .coach-tip{ position:absolute; max-width:250px; background:#fff; border-radius:10px; padding:12px 14px; box-shadow:0 10px 30px -12px rgba(33,30,63,.7); }
+  .coach-tip p{ font-size:13px; font-weight:500; line-height:1.45; margin-bottom:9px; }
+  .coach-tip button{ background:var(--ink); color:#fff; border:none; border-radius:7px; padding:7px 14px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+  .coach-tip::before{ content:""; position:absolute; width:12px; height:12px; background:#fff; transform:rotate(45deg); left:26px; }
+  .coach-tip.below::before{ top:-6px; }
+  .coach-tip.above::before{ bottom:-6px; }
   .zoom-overlay{ position:fixed; inset:0; background:rgba(33,30,63,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:50; }
   .zoom-overlay.show{ display:flex; }
   .zoom-panel{ background:#fff; border-radius:12px; max-width:560px; width:100%; max-height:85vh; overflow:auto; padding:26px 28px; position:relative; }
@@ -181,7 +182,7 @@
     .sheet{ box-shadow:none; }
     .sheet,.track.depth,.track.breadth,.foot{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
     .cta-band{ display:none; }
-    .xpand,.zoom-overlay,.tut-overlay{ display:none; }
+    .xpand,.zoom-overlay,.coach{ display:none; }
   }
 </style>
 </head>
@@ -237,13 +238,9 @@
   </footer>
 
 </div>
-<div class="tut-overlay" id="tut" hidden>
-  <div class="tut-card">
-    <p class="tut-h">Quick tips</p>
-    <p class="tut-line"><span class="tut-n">1</span><span>Tap a minor's <b>title</b> to enlarge its details.</span></p>
-    <p class="tut-line"><span class="tut-n">2</span><span>Tap the <b>orange button</b> further down to verify your eligibility.</span></p>
-    <button class="tut-btn" id="tut-ok" type="button">Got it</button>
-  </div>
+<div class="coach" id="coach" hidden>
+  <div class="coach-hole" id="coach-hole"></div>
+  <div class="coach-tip" id="coach-tip"><p id="coach-text"></p><button id="coach-next" type="button">Next</button></div>
 </div>
 <div class="zoom-overlay" id="zoom">
   <div class="zoom-panel" id="zoom-panel" role="dialog" aria-modal="true">
@@ -275,13 +272,47 @@ document.getElementById('zoom-close').addEventListener('click', closeZoom);
 overlay.addEventListener('click', function(e){ if(e.target === overlay) closeZoom(); });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeZoom(); });
 try{
-  if(window.matchMedia('(max-width:620px)').matches && !localStorage.getItem('clsTutorialSeen')){
-    var tut = document.getElementById('tut');
-    tut.hidden = false;
-    document.getElementById('tut-ok').addEventListener('click', function(){
-      tut.hidden = true;
-      try{ localStorage.setItem('clsTutorialSeen','1'); }catch(e){}
-    });
+  if(window.matchMedia('(max-width:620px)').matches && !localStorage.getItem('clsCoachSeen')){
+    var coach = document.getElementById('coach');
+    var hole = document.getElementById('coach-hole');
+    var tip = document.getElementById('coach-tip');
+    var tipText = document.getElementById('coach-text');
+    var nextBtn = document.getElementById('coach-next');
+    var steps = [
+      { sel: '.track.depth .track-name', text: 'Tap a minor\u2019s title to enlarge its details.', pos: 'below' },
+      { sel: '.cta-chip', text: 'Tap this button to verify your eligibility.', pos: 'above' }
+    ];
+    var step = -1;
+    function showStep(i){
+      var s = steps[i];
+      var el = s && document.querySelector(s.sel);
+      if(!el){ finishCoach(); return; }
+      el.scrollIntoView({block:'center'});
+      requestAnimationFrame(function(){
+        var r = el.getBoundingClientRect(), pad = 6;
+        hole.style.left = (r.left - pad) + 'px';
+        hole.style.top = (r.top - pad) + 'px';
+        hole.style.width = (r.width + 2*pad) + 'px';
+        hole.style.height = (r.height + 2*pad) + 'px';
+        tip.className = 'coach-tip ' + s.pos;
+        tipText.textContent = s.text;
+        nextBtn.textContent = (i === steps.length - 1) ? 'Got it' : 'Next';
+        tip.style.left = Math.max(12, Math.min(r.left, window.innerWidth - 262)) + 'px';
+        if(s.pos === 'above'){ tip.style.top = ''; tip.style.bottom = (window.innerHeight - r.top + 14) + 'px'; }
+        else { tip.style.bottom = ''; tip.style.top = (r.bottom + pad + 14) + 'px'; }
+      });
+    }
+    function nextStep(){ step++; if(step >= steps.length){ finishCoach(); } else { showStep(step); } }
+    function finishCoach(){
+      coach.hidden = true;
+      document.body.style.overflow = '';
+      try{ localStorage.setItem('clsCoachSeen','1'); }catch(e){}
+      window.scrollTo({top:0});
+    }
+    coach.hidden = false;
+    document.body.style.overflow = 'hidden';
+    coach.addEventListener('click', nextStep);
+    nextStep();
   }
 }catch(e){}
 
