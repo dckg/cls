@@ -1,6 +1,7 @@
 {
   "$schema": "https://unpkg.com/wrangler/config-schema.json",
   "name": "cls",
+  "main": "worker.js",
   "compatibility_date": "2026-07-21",
-  "assets": { "directory": "./" }
+  "assets": { "directory": "./", "binding": "ASSETS" }
 }

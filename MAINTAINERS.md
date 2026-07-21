@@ -91,15 +91,17 @@ Architecture, in five lines:
    AY (derived from today's date; override with an argument, e.g.
    `python3 check_availability.py 2027-2028`) and writes two generated
    files: `data/minor_availability.json` and `checker_data.js`.
-2. `index.html` (the "Two Ways to Minor in Languages" poster landing page)
-   links to `checker.html` (the checker), a static page that reads
+2. `minor.html` (the "Two Ways to Minor in Languages" poster landing page,
+   served at cls.nusu.town/minor) links to `minor-checker.html` (the checker,
+   at /minor-checker), a static page that reads
    `checker_data.js` via a script tag — no build step, no server code.
 3. `tests/test_checker.js` (verdict logic) and `tests/verify_data.js`
    (generated-data consistency) must both pass; run them with `node`.
 4. `.github/workflows/update-availability.yml` runs steps 1 and 3 every
    Monday and opens a PR (branch `auto/nusmods-refresh`) if the data
    changed. Merging to `main` is the human gate.
-5. Cloudflare (Workers Builds, config in `wrangler.jsonc`) deploys `main`
+5. Cloudflare (Workers Builds, config in `wrangler.jsonc`; `worker.js`
+   handles redirects and clean URLs) deploys `main`
    to cls.nusu.town automatically on every push.
 
 **Policy vs availability.** Course *availability* updates itself from

@@ -37,19 +37,19 @@ maintainer guide (no technical skills required).**
 - `check_availability.py` — the checker script; encodes the minor requirements (CLS policy) inline and generates everything below
 - `data/minor_availability.json` — *generated*: availability data (Sem 1 / Sem 2 / not offered, per minor)
 - `checker_data.js` — *generated*: course levels, semester tags and recognised-course options for the eligibility checker
-- `index.html` — landing page: the "Two Ways to Minor in Languages" poster (same wording and
+- `minor.html` — landing page (served at cls.nusu.town/minor): the "Two Ways to Minor in Languages" poster (same wording and
   layout as the printed A5 poster), linking on to the checker
-- `checker.html` — standalone interactive eligibility checker for the
+- `minor-checker.html` — standalone interactive eligibility checker (served at cls.nusu.town/minor-checker) for the
   Minor in Language Studies and the Minor in Multilingual Communication: add the relevant CLS
   level courses for each language you plan to complete and it works out which minor(s) you would
   qualify for, including whether the two can be held together. Live at
-  [cls.nusu.town](https://cls.nusu.town); also works opened directly in a browser —
+  [cls.nusu.town/minor-checker](https://cls.nusu.town/minor-checker); also works opened directly in a browser —
   no build step or server needed. Results are based on the current offer of CLS courses and may
   vary according to the availability of the listed courses in each AY and the condition that a
   prescribed number of enrolments is met in those courses. Indicative only — confirm with CLS.
 - `tests/` — headless tests: `test_checker.js` (verdict logic), `verify_data.js` (generated-data consistency)
 - `.github/workflows/update-availability.yml` — the weekly auto-update (opens a PR; a human merges)
-- `wrangler.jsonc` — Cloudflare deployment config (static assets)
+- `wrangler.jsonc` + `worker.js` — Cloudflare deployment config and the routing layer (clean URLs, legacy redirects, apex redirect)
 - `MAINTAINERS.md` — plain-English guide to keeping the site current
 - `canvas/nus-language-minors-ay2627.canvas.tsx` — interactive Cursor Canvas view of the same data
 
