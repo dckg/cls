@@ -344,6 +344,22 @@ function nextSteps(a){
 }
 
 render();
+
+(function(){
+  try{
+    var k = document.querySelector('.m-kicker');
+    var chunk = k && k.querySelector ? k.querySelector('span') : null;
+    if(!chunk) return;
+    function fit(){
+      k.style.fontSize = '';
+      var base = parseFloat(getComputedStyle(k).fontSize);
+      k.style.fontSize = (base * k.clientWidth / chunk.offsetWidth * 0.99) + 'px';
+    }
+    fit();
+    window.addEventListener('resize', fit);
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  }catch(e){}
+})();
 </script>
 </body>
 </html>

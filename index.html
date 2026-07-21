@@ -258,6 +258,22 @@ function closeZoom(){ overlay.classList.remove('show'); }
 document.getElementById('zoom-close').addEventListener('click', closeZoom);
 overlay.addEventListener('click', function(e){ if(e.target === overlay) closeZoom(); });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeZoom(); });
+
+(function(){
+  try{
+    var k = document.querySelector('.kicker');
+    var chunk = k && k.querySelector ? k.querySelector('span') : null;
+    if(!chunk) return;
+    function fit(){
+      k.style.fontSize = '';
+      var base = parseFloat(getComputedStyle(k).fontSize);
+      k.style.fontSize = (base * k.clientWidth / chunk.offsetWidth * 0.99) + 'px';
+    }
+    fit();
+    window.addEventListener('resize', fit);
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
