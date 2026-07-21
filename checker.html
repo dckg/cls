@@ -110,7 +110,7 @@
   .foot a{ color:inherit; }
   .frow{ display:flex; gap:12px; margin-bottom:9px; }
   .frow:last-child{ margin-bottom:0; }
-  .flab{ flex:0 0 88px; font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink); padding-top:2px; }
+  .flab{ flex:0 0 64px; font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink); padding-top:2px; }
 
   @media (max-width:620px){
     .hero,.body,.foot{ padding-left:18px; padding-right:18px; }
@@ -184,15 +184,24 @@ const resultEl = $('#result');
 
 const cols = [ { lang:'' }, { lang:'' } ];
 
-function toggleLevel(l,lvl){ const s=studied[l].levels; s.has(lvl)?s.delete(lvl):s.add(lvl); render(); }
-function toggleRecog(l,v){ studied[l].recognised=v; render(); }
+let anchored = false;
+function anchorTop(){
+  if(anchored) return; anchored = true;
+  try{
+    const h = document.querySelector('.hero');
+    if(h && h.scrollIntoView) h.scrollIntoView({behavior:'smooth'});
+  }catch(e){}
+}
+
+function toggleLevel(l,lvl){ const s=studied[l].levels; s.has(lvl)?s.delete(lvl):s.add(lvl); anchorTop(); render(); }
+function toggleRecog(l,v){ studied[l].recognised=v; anchorTop(); render(); }
 
 function kClass(lvl){ return lvl>=6?'k6':(lvl>=4?'k4':(lvl>=2?'k2':'')); }
 
 function refreshPicks(){
   document.querySelectorAll('.langpick').forEach(sel=>{
     const i = +sel.dataset.col, other = cols[1-i].lang, cur = cols[i].lang;
-    sel.innerHTML = '<option value="">— select a language —</option>' +
+    sel.innerHTML = '<option value="">select a language</option>' +
       ALL.filter(l=>l!==other).map(l=>`<option value="${l}" ${l===cur?'selected':''}>${l}</option>`).join('');
   });
 }
@@ -236,6 +245,7 @@ document.querySelectorAll('.langpick').forEach(sel=>{
     if(old && old !== nw) delete studied[old];
     cols[i].lang = nw;
     if(nw && !studied[nw]) studied[nw] = { levels:new Set(), recognised:'' };
+    anchorTop();
     render();
   };
 })

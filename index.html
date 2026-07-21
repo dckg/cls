@@ -91,6 +91,14 @@
   .xpand:hover, .xpand:focus-visible{ opacity:1; background:rgba(255,255,255,.65); }
   .depth .xpand{ color:var(--lavender); }
   .breadth .xpand{ color:var(--coral); }
+  .tut-overlay{ position:fixed; inset:0; background:rgba(33,30,63,.62); display:flex; align-items:center; justify-content:center; padding:20px; z-index:60; }
+  .tut-overlay[hidden]{ display:none; }
+  .tut-card{ background:#fff; border-radius:12px; max-width:340px; width:100%; padding:20px 22px; }
+  .tut-h{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:18px; margin-bottom:10px; }
+  .tut-line{ font-size:13px; line-height:1.5; margin-bottom:9px; display:flex; gap:9px; }
+  .tut-n{ flex-shrink:0; width:20px; height:20px; border-radius:50%; background:var(--lavender); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-top:1px; }
+  .tut-line:nth-of-type(3) .tut-n{ background:var(--coral); }
+  .tut-btn{ margin-top:6px; width:100%; background:var(--ink); color:#fff; border:none; border-radius:8px; padding:10px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; }
   .zoom-overlay{ position:fixed; inset:0; background:rgba(33,30,63,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:50; }
   .zoom-overlay.show{ display:flex; }
   .zoom-panel{ background:#fff; border-radius:12px; max-width:560px; width:100%; max-height:85vh; overflow:auto; padding:26px 28px; position:relative; }
@@ -104,10 +112,10 @@
   .zoom-panel .outcome span{ font-size:12px; }
   .zoom-close{ position:absolute; top:10px; right:10px; width:28px; height:28px; border-radius:50%; border:1px solid rgba(33,30,63,.4); background:#fff; color:var(--ink); font-size:14px; line-height:1; cursor:pointer; }
 
-  .focus{ font-size:12.5px; line-height:1.4; color:#2c2b33; margin-bottom:11px; min-height:1.5em; }
+  .focus{ font-size:12.5px; font-weight:500; line-height:1.4; color:#2c2b33; margin-bottom:11px; min-height:1.5em; }
 
   .reqs{ list-style:none; margin-bottom:auto; }
-  .reqs li{ position:relative; padding-left:13px; font-size:12px; line-height:1.38; margin-bottom:6px; color:#2c2b33; }
+  .reqs li{ position:relative; padding-left:13px; font-size:12px; font-weight:500; line-height:1.38; margin-bottom:6px; color:#2c2b33; }
   .reqs li::before{ content:""; position:absolute; left:0; top:6px; width:5px; height:5px; border-radius:50%; }
   .depth .reqs li::before{ background:var(--lavender); }
   .breadth .reqs li::before{ background:var(--coral); }
@@ -122,7 +130,7 @@
 
   /* FOOTER */
   .foot{ background:var(--ink); color:#fff; padding:5mm 11mm 5.5mm; }
-  .langs{ font-size:10px; letter-spacing:.02em; color:#cfcdd9; line-height:1.5; }
+  .langs{ font-size:10px; font-weight:500; letter-spacing:.02em; color:#cfcdd9; line-height:1.5; }
   .langs b{ color:#fff; font-weight:700; }
   .lang-ab{ font-size:8px; color:#a9a7b8; line-height:1.45; margin-top:6px; }
   .note-extra{ font-size:11px; font-weight:700; color:#ffb39c; margin-top:8px; }
@@ -173,7 +181,7 @@
     .sheet{ box-shadow:none; }
     .sheet,.track.depth,.track.breadth,.foot{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
     .cta-band{ display:none; }
-    .xpand,.zoom-overlay{ display:none; }
+    .xpand,.zoom-overlay,.tut-overlay{ display:none; }
   }
 </style>
 </head>
@@ -229,6 +237,14 @@
   </footer>
 
 </div>
+<div class="tut-overlay" id="tut" hidden>
+  <div class="tut-card">
+    <p class="tut-h">Quick tips</p>
+    <p class="tut-line"><span class="tut-n">1</span><span>Tap a minor's <b>title</b> to enlarge its details.</span></p>
+    <p class="tut-line"><span class="tut-n">2</span><span>Tap the <b>orange button</b> further down to verify your eligibility.</span></p>
+    <button class="tut-btn" id="tut-ok" type="button">Got it</button>
+  </div>
+</div>
 <div class="zoom-overlay" id="zoom">
   <div class="zoom-panel" id="zoom-panel" role="dialog" aria-modal="true">
     <button class="zoom-close" id="zoom-close" aria-label="Close">✕</button>
@@ -258,6 +274,16 @@ function closeZoom(){ overlay.classList.remove('show'); }
 document.getElementById('zoom-close').addEventListener('click', closeZoom);
 overlay.addEventListener('click', function(e){ if(e.target === overlay) closeZoom(); });
 document.addEventListener('keydown', function(e){ if(e.key === 'Escape') closeZoom(); });
+try{
+  if(window.matchMedia('(max-width:620px)').matches && !localStorage.getItem('clsTutorialSeen')){
+    var tut = document.getElementById('tut');
+    tut.hidden = false;
+    document.getElementById('tut-ok').addEventListener('click', function(){
+      tut.hidden = true;
+      try{ localStorage.setItem('clsTutorialSeen','1'); }catch(e){}
+    });
+  }
+}catch(e){}
 
 (function(){
   try{
