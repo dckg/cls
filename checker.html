@@ -204,7 +204,7 @@ function colHTML(l){
   }).join('');
   const recogOpts = (RECOG[l]||[]).map(([code,title,sem])=>
     `<option value="${code}" ${d.recognised===code?'selected':''}>${code} — ${title} (${sem})</option>`).join('');
-  const recog = `<label class="recog">Recognised course in the ${l} track (for the 4 + 1 route):
+  const recog = `<label class="recog">LS Minor-recognised course for ${l} (for the 4 + 1 route):
      <select data-recog="${l}"><option value="">— none —</option>${recogOpts}</select></label>`;
   let note;
   if(b2) note='<div class="b2only">Offered as a second (CLS Level 2) language in Multilingual Communication.</div>';
