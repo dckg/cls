@@ -3,5 +3,9 @@
   "name": "cls",
   "main": "worker.js",
   "compatibility_date": "2026-07-21",
-  "assets": { "directory": "./", "binding": "ASSETS" }
+  "assets": { "directory": "./", "binding": "ASSETS" },
+  "routes": [
+    { "pattern": "cls.nusu.town", "custom_domain": true },
+    { "pattern": "nusu.town", "custom_domain": true }
+  ]
 }
