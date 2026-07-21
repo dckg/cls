@@ -25,7 +25,7 @@
   .card{ background:var(--paper); min-height:170mm; box-shadow:0 18px 44px -22px rgba(28,27,31,.5); overflow:hidden; }
 
   .masthead{ background:#e6e3f5; padding:7mm 11mm 6mm; }
-  .m-row{ display:flex; align-items:center; gap:calc(6mm - 12px); }
+  .m-row{ display:flex; align-items:center; gap:7mm; }
   .m-logo{ width:27.8%; height:auto; display:block; flex-shrink:0; transform:translateY(20px); }
   .m-kicker{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:22px; line-height:1.06; letter-spacing:-.01em; flex:1; min-width:0; }
   .m-lede{ font-family:"Fraunces",Georgia,serif; font-size:13px; line-height:1.4; color:#3a3942; margin-top:36px; text-align:center; }
@@ -131,7 +131,7 @@
         <img class="m-logo" src="logo.png" alt="NUS · Centre for Language Studies">
         <p class="m-kicker"><span style="white-space:nowrap">Two Ways to Minor</span> in Languages</p>
       </div>
-      <p class="m-lede">Declare one — or <b>both</b>. You can hold both minors by double-counting up to <b>8 units</b> between them.</p>
+      <p class="m-lede">Declare one — or <b>both</b>. You can hold both minors by double-counting up to <b>8&nbsp;units</b> between them.</p>
     </div>
     <div class="bicolor"><span></span><span></span></div>
     <div class="hero">
@@ -159,7 +159,7 @@
     <div class="foot">
       <div class="frow"><span class="flab">Status guide</span><span><b>Indicative only</b> — always confirm course availability with CLS.</span></div>
       <div class="frow"><span class="flab">Timeline</span><span>Declare the Minor(s) in your Academic Plan by your 5th Sem.</span></div>
-      <div class="frow"><span class="flab">Units</span><span>1 CLS course = 4 academic units. Up to 8 units may be double-counted between the LS Minor and the 2nd language for the MC Minor.</span></div>
+      <div class="frow"><span class="flab">Units</span><span>1 CLS course = 4 academic units. Up to 8&nbsp;units may be double-counted between the LS Minor and the 2nd language for the MC Minor.</span></div>
       <div class="frow"><span class="flab">More</span><span>Find out more at <a href="https://fass.nus.edu.sg/cls/minor-programmes"><b>fass.nus.edu.sg/cls/minor-programmes</b></a></span></div>
     </div>
   </div>
@@ -264,7 +264,7 @@ function renderResult(a){
   let cls,verdict,expl,below='';
   if(a.both){
     cls='both'; verdict='🎉 You qualify for BOTH minors!';
-    expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8 units).`;
+    expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
   } else if(a.canLS && a.canMC){
     cls='either'; verdict='Either minor — but not both at once';
     expl='';
