@@ -99,6 +99,7 @@
   /* result */
   .result{ margin-top:8px; border-radius:12px; padding:18px 20px; }
   .result .verdict{ font-family:"Fraunces",serif; font-weight:600; font-size:22px; line-height:1.15; }
+  .result .verdict u{ color:#c0392b; }
   .result .expl{ font-size:13px; line-height:1.55; margin-top:8px; }
   .result.both{ background:var(--gold-tint); border:2px solid var(--gold-line); } .result.both .verdict{ color:#8a5e05; }
   .result.one{ background:var(--green-tint); border:1.5px solid #b8ddc8; } .result.one .verdict{ color:var(--green); }
@@ -311,7 +312,7 @@ function renderResult(a){
       expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
     }
   } else if(a.canLS && a.canMC){
-    cls='either'; verdict='<u>Either</u> minor — but not both at once';
+    cls='either'; verdict='<u>Either</u> minor — but <u>not both</u> at once';
     expl='';
     below=`To hold both minors, your <b>CLS Level 4</b> language must be <b>different</b> from your <b>CLS Level 6</b> language.`;
   } else if(a.canLS){
