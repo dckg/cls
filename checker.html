@@ -187,10 +187,14 @@ const cols = [ { lang:'' }, { lang:'' } ];
 let anchored = false;
 function anchorTop(){
   if(anchored) return; anchored = true;
-  try{
-    const h = document.querySelector('.hero');
-    if(h && h.scrollIntoView) h.scrollIntoView({behavior:'smooth'});
-  }catch(e){}
+  setTimeout(function(){
+    try{
+      const h = document.querySelector('.hero');
+      if(!h || !h.getBoundingClientRect) return;
+      const y = h.getBoundingClientRect().top + (window.pageYOffset || 0);
+      window.scrollTo({top: y, behavior: 'smooth'});
+    }catch(e){}
+  }, 80);
 }
 
 function toggleLevel(l,lvl){ const s=studied[l].levels; s.has(lvl)?s.delete(lvl):s.add(lvl); anchorTop(); render(); }
