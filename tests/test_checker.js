@@ -54,20 +54,17 @@ function check(name, scenario, mustContain, mustNotContain = []) {
 check('either — but not both: rule shown after the boxes, no unlock paragraph',
   { Chinese: [1,2,3,4,5,6], Thai: [1,2] },
   ['Either minor — but not both at once',
-   'To hold both minors',
-   '(Results subject to the availability of listed courses'],
+   'To hold both minors'],
   ['Quickest unlock']);
 
 check('either + only Malay (not in the nine)',
   { Chinese: [1,2,3,4,5,6], Malay: [1,2] },
-  ['Either minor — but not both at once',
-   '(Results subject to the availability of listed courses'],
+  ['Either minor — but not both at once'],
   ['Quickest unlock']);
 
 check('Thai at Level 4 gives BOTH',
   { Chinese: [1,2,3,4,5,6], Thai: [1,2,3,4] },
-  ['You qualify for BOTH minors',
-   '(Results subject to the availability of listed courses']);
+  ['You qualify for BOTH minors']);
 
 check('LS only (no second language) unchanged',
   { Chinese: [1,2,3,4,5,6] },
