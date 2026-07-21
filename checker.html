@@ -19,20 +19,24 @@
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
     background:#e8e5df; font-family:"Hanken Grotesk",system-ui,sans-serif; font-weight:450;
-    color:var(--ink); display:flex; justify-content:center; padding:24px 12px;
+    color:var(--ink); display:flex; justify-content:center; padding:20px 10px;
   }
-  .wrap{ width:100%; max-width:860px; }
-  .card{ background:var(--paper); border-radius:14px; box-shadow:0 24px 60px -30px rgba(33,30,63,.5); overflow:hidden; }
+  .wrap{ width:100%; max-width:148mm; }
+  .card{ background:var(--paper); box-shadow:0 18px 44px -22px rgba(28,27,31,.5); overflow:hidden; }
 
   .masthead{ background:#e6e3f5; padding:7mm 11mm 6mm; }
   .m-row{ display:flex; align-items:center; gap:calc(6mm - 12px); }
   .m-logo{ height:25.3mm; width:auto; display:block; flex-shrink:0; transform:translateY(20px); }
   .m-kicker{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:22px; line-height:1.06; letter-spacing:-.01em; }
   .m-lede{ font-family:"Fraunces",Georgia,serif; font-size:13px; line-height:1.4; color:#3a3942; margin-top:36px; text-align:center; }
-  .hero{ background:#e6e3f5; padding:16px 30px 20px; border-top:1px solid rgba(33,30,63,.12); }
+  .bicolor{ display:flex; height:5px; }
+  .bicolor span{ flex:1; }
+  .bicolor span:first-child{ background:var(--indigo); }
+  .bicolor span:last-child{ background:var(--coral); }
+  .hero{ background:#fff; padding:18px 30px 4px; }
   .eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--indigo); }
   h1{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:27px; line-height:1.08; letter-spacing:-.015em; margin:7px 0 6px; }
-  .hero p{ font-size:13.5px; color:#3a3942; line-height:1.5; }
+  .hero p{ font-size:12.5px; color:var(--muted); line-height:1.5; margin-top:4px; }
 
   .body{ padding:22px 30px 26px; }
   .adder{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
@@ -65,6 +69,17 @@
 
   .empty{ color:var(--muted); font-size:13px; font-style:italic; padding:6px 0 14px; }
 
+  .pick{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); margin-bottom:16px; }
+  .pcol{ padding:13px 12px 15px; }
+  .pa{ background:var(--indigo-tint); border-top:5px solid var(--indigo); }
+  .pb{ background:var(--coral-tint); border-top:5px solid var(--coral); }
+  .pick-h{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:15px; margin-bottom:8px; }
+  .pa .pick-h{ color:var(--indigo); }
+  .pb .pick-h{ color:var(--coral); }
+  .langpick{ width:100%; margin-bottom:10px; font-size:13px; padding:9px 10px; }
+  .pcol .empty{ padding:2px 0 4px; }
+  .pcol .recog select{ min-width:0; width:100%; }
+
   /* result */
   .result{ margin-top:8px; border-radius:12px; padding:18px 20px; }
   .result .verdict{ font-family:"Fraunces",serif; font-weight:600; font-size:22px; line-height:1.15; }
@@ -93,6 +108,8 @@
 
   @media (max-width:600px){
     .hero,.body,.foot{ padding-left:18px; padding-right:18px; }
+    .pcol{ padding:10px 8px 12px; }
+    .lvbtn{ min-width:56px; }
     .masthead{ padding:6mm 6mm 5mm; }
     .m-logo{ height:15mm; transform:none; }
     .m-kicker{ font-size:18px; }
@@ -111,17 +128,25 @@
       </div>
       <p class="m-lede">Declare one — or <b>both</b>. You can hold both minors by double-counting up to <b>8 units</b> between them.</p>
     </div>
+    <div class="bicolor"><span></span><span></span></div>
     <div class="hero">
-      <h1>Which language minor(s) do you qualify for?</h1>
-      <p>Add the relevant CLS level courses for each language you plan to complete. The result updates as you go.</p>
+      <h1>CLS Minor Eligibility Checker</h1>
+      <p>Pick a language on each side and tap the courses you plan to complete — the result updates as you go.</p>
     </div>
 
     <div class="body">
-      <div class="adder">
-        <select id="langsel"></select>
-        <button class="btn" id="addbtn">Add language</button>
+      <div class="pick">
+        <section class="pcol pa">
+          <div class="pick-h">First language</div>
+          <select class="langpick" data-col="0" aria-label="First language"></select>
+          <div id="col0"></div>
+        </section>
+        <section class="pcol pb">
+          <div class="pick-h">Second language</div>
+          <select class="langpick" data-col="1" aria-label="Second language"></select>
+          <div id="col1"></div>
+        </section>
       </div>
-      <div id="cards"></div>
       <div id="result"></div>
     </div>
 
@@ -149,65 +174,65 @@ document.querySelectorAll('.meta-checked').forEach(e => e.textContent = META.che
 const studied = {};
 
 const $ = s => document.querySelector(s);
-const langsel = $('#langsel'), cards = $('#cards'), resultEl = $('#result');
+const resultEl = $('#result');
 
-function refreshSelect(){
-  const avail = ALL.filter(l => !(l in studied));
-  langsel.innerHTML = avail.map(l=>`<option value="${l}">${l}</option>`).join('');
-  langsel.disabled = avail.length===0;
-  $('#addbtn').disabled = avail.length===0;
-}
+const cols = [ { lang:'' }, { lang:'' } ];
 
-$('#addbtn').onclick = ()=>{
-  const l = langsel.value; if(!l) return;
-  studied[l] = { levels:new Set(), recognised:'' };
-  render();
-};
-
-function removeLang(l){ delete studied[l]; render(); }
 function toggleLevel(l,lvl){ const s=studied[l].levels; s.has(lvl)?s.delete(lvl):s.add(lvl); render(); }
 function toggleRecog(l,v){ studied[l].recognised=v; render(); }
 
 function kClass(lvl){ return lvl>=6?'k6':(lvl>=4?'k4':(lvl>=2?'k2':'')); }
 
-function render(){
-  refreshSelect();
-  const langs = Object.keys(studied);
-  cards.innerHTML = langs.length? '' : '<div class="empty">No languages added yet — add one above to begin.</div>';
-  langs.forEach(l=>{
-    const d = studied[l];
-    const maxOffered = COURSES[l][COURSES[l].length-1][0];
-    const b2 = !NINE.includes(l);
-    const lv = COURSES[l].map(([lvl,code])=>{
-      const on = d.levels.has(lvl);
-      const s1 = (SEM1[l]||[]).includes(lvl), s2 = (SEM2[l]||[]).includes(lvl);
-      const sem = (s1&&s2)?'Sem 1·2':(s1?'Sem 1':(s2?'Sem 2':'—'));
-      return `<div class="lvbtn ${on?'on '+kClass(lvl):''}" data-l="${l}" data-lvl="${lvl}">
-        <span class="n">Lv ${lvl}</span><span class="cd">${code}</span><span class="sem">${sem}</span></div>`;
-    }).join('');
-    const recogOpts = (RECOG[l]||[]).map(([code,title,sem])=>
-      `<option value="${code}" ${d.recognised===code?'selected':''}>${code} — ${title} (${sem})</option>`).join('');
-    const recog = `<label class="recog">Recognised course in the ${l} track (for the 4 + 1 route):
-       <select data-recog="${l}"><option value="">— none —</option>${recogOpts}</select></label>`;
-    let note;
-    if(b2) note='<div class="b2only">Offered as a second (CLS Level 2) language in Multilingual Communication.</div>';
-    else if(maxOffered<6) note='<div class="b2only">Currently offered up to CLS Level 4 — eligible as the CLS Level 4 language in Multilingual Communication, but not to Level 6 for Language Studies.</div>';
-    else note=recog;
-    cards.insertAdjacentHTML('beforeend', `
-      <div class="langcard">
-        <div class="langhead"><span class="nm">${l}</span><button class="remove" data-rm="${l}">Remove</button></div>
-        <div class="levels">${lv}</div>
-        ${note}
-      </div>`);
+function refreshPicks(){
+  document.querySelectorAll('.langpick').forEach(sel=>{
+    const i = +sel.dataset.col, other = cols[1-i].lang, cur = cols[i].lang;
+    sel.innerHTML = '<option value="">— select a language —</option>' +
+      ALL.filter(l=>l!==other).map(l=>`<option value="${l}" ${l===cur?'selected':''}>${l}</option>`).join('');
   });
+}
 
-  // wire events
-  cards.querySelectorAll('.lvbtn').forEach(b=> b.onclick=()=>toggleLevel(b.dataset.l, +b.dataset.lvl));
-  cards.querySelectorAll('[data-rm]').forEach(b=> b.onclick=()=>removeLang(b.dataset.rm));
-  cards.querySelectorAll('[data-recog]').forEach(c=> c.onchange=()=>toggleRecog(c.dataset.recog, c.value));
+function colHTML(l){
+  const d = studied[l];
+  const maxOffered = COURSES[l][COURSES[l].length-1][0];
+  const b2 = !NINE.includes(l);
+  const lv = COURSES[l].map(([lvl,code])=>{
+    const on = d.levels.has(lvl);
+    const s1 = (SEM1[l]||[]).includes(lvl), s2 = (SEM2[l]||[]).includes(lvl);
+    const sem = (s1&&s2)?'Sem 1·2':(s1?'Sem 1':(s2?'Sem 2':'—'));
+    return `<div class="lvbtn ${on?'on '+kClass(lvl):''}" data-l="${l}" data-lvl="${lvl}">
+      <span class="n">Lv ${lvl}</span><span class="cd">${code}</span><span class="sem">${sem}</span></div>`;
+  }).join('');
+  const recogOpts = (RECOG[l]||[]).map(([code,title,sem])=>
+    `<option value="${code}" ${d.recognised===code?'selected':''}>${code} — ${title} (${sem})</option>`).join('');
+  const recog = `<label class="recog">Recognised course in the ${l} track (for the 4 + 1 route):
+     <select data-recog="${l}"><option value="">— none —</option>${recogOpts}</select></label>`;
+  let note;
+  if(b2) note='<div class="b2only">Offered as a second (CLS Level 2) language in Multilingual Communication.</div>';
+  else if(maxOffered<6) note='<div class="b2only">Currently offered up to CLS Level 4 — eligible as the CLS Level 4 language in Multilingual Communication, but not to Level 6 for Language Studies.</div>';
+  else note=recog;
+  return `<div class="levels">${lv}</div>${note}`;
+}
 
+function render(){
+  refreshPicks();
+  [0,1].forEach(i=>{
+    const host = $('#col'+i), l = cols[i].lang;
+    host.innerHTML = l ? colHTML(l) : '<div class="empty">Select a language above — its courses appear here.</div>';
+  });
+  document.querySelectorAll('.lvbtn').forEach(b=> b.onclick=()=>toggleLevel(b.dataset.l, +b.dataset.lvl));
+  document.querySelectorAll('[data-recog]').forEach(cb=> cb.onchange=()=>toggleRecog(cb.dataset.recog, cb.value));
   renderResult(analyze());
 }
+
+document.querySelectorAll('.langpick').forEach(sel=>{
+  sel.onchange = ()=>{
+    const i = +sel.dataset.col, old = cols[i].lang, nw = sel.value;
+    if(old && old !== nw) delete studied[old];
+    cols[i].lang = nw;
+    if(nw && !studied[nw]) studied[nw] = { levels:new Set(), recognised:'' };
+    render();
+  };
+})
 
 function metrics(l){
   const lv=[...studied[l].levels]; return { count:lv.length, max:lv.length?Math.max(...lv):0 };

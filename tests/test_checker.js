@@ -25,13 +25,17 @@ global.document = {
 const harness = `
 ;globalThis.__run = function(scenario){
   for(const k of Object.keys(studied)) delete studied[k];
-  for(const [lang, v] of Object.entries(scenario)){
+  cols[0].lang = ''; cols[1].lang = '';
+  Object.entries(scenario).forEach(function(entry, idx){
+    const lang = entry[0], v = entry[1];
     const levels = Array.isArray(v) ? v : v.levels;
     const recog = Array.isArray(v) ? '' : (v.recog || '');
     studied[lang] = { levels: new Set(levels), recognised: recog };
-  }
+    if (idx < 2) cols[idx].lang = lang;
+  });
   render();
-  return document.querySelector('#result').innerHTML + '||CARDS||' + document.querySelector('#cards').innerHTML;
+  return document.querySelector('#result').innerHTML + '||CARDS||' +
+         document.querySelector('#col0').innerHTML + document.querySelector('#col1').innerHTML;
 };`;
 
 eval(dataJs + script + harness);

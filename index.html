@@ -72,7 +72,7 @@
   .track.depth{ background:var(--lavender-tint); border-top:5px solid var(--lavender); }
   .track.breadth{ background:var(--coral-tint); border-top:5px solid var(--coral); }
 
-  .track-name{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:17px; line-height:1.05; margin-bottom:11px; min-height:2.2em; padding-right:12px; cursor:pointer; }
+  .track-name{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:17px; line-height:1.22; margin-bottom:11px; min-height:2.2em; padding-right:12px; cursor:pointer; }
   .track-name .new{
     font-family:"Hanken Grotesk",sans-serif; font-size:9px; font-weight:700;
     letter-spacing:.12em; text-transform:uppercase; background:var(--coral);
@@ -135,7 +135,7 @@
   /* CTA band linking to the eligibility checker (web only) */
   .cta-band{ background:#fff; padding:4.5mm 11mm; display:flex; align-items:center; justify-content:space-between; gap:6mm;
     border-top:1.5px solid var(--ink); border-bottom:1.5px solid var(--ink); }
-  .cta-q{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:15.5px; color:var(--ink); }
+  .cta-q{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:15.5px; color:var(--ink); min-width:0; }
   .cta-chip{ display:inline-block; flex-shrink:0; margin-left:auto; background:var(--coral); color:#fff; text-decoration:none;
     font-size:9.5px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
     padding:8px 18px; border-radius:2px; }
@@ -143,8 +143,8 @@
   .cta-chip .arr{ display:inline-block; transition:transform .15s ease; }
   .cta-chip:hover .arr{ transform:translateX(3px); }
   @media screen and (max-width:620px){
-    .cta-band{ flex-wrap:wrap; gap:8px 12px; padding:4.5mm 6mm; }
-    .cta-q{ font-size:13.5px; }
+    .cta-band{ gap:12px; padding:4.5mm 6mm; }
+    .cta-q{ font-size:13px; }
   }
   .foot a{ color:inherit; text-decoration:none; }
   .foot-qr{ float:right; width:24mm; height:24mm; background:#fff; padding:2.5mm; border-radius:2px; display:block; margin:1mm 0 1mm 5mm; }
