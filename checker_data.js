@@ -252,6 +252,13 @@ const COURSES = {
     ]
   ]
 };
+const ALTS = {
+  "Japanese": {
+    "6": [
+      "LAJ3204"
+    ]
+  }
+};
 const SEM1 = {
   "Arabic": [
     1,

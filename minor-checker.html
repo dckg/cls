@@ -243,8 +243,10 @@ function colHTML(l){
     const on = d.levels.has(lvl);
     const s1 = (SEM1[l]||[]).includes(lvl), s2 = (SEM2[l]||[]).includes(lvl);
     const sem = (s1&&s2)?'Sem 1·2':(s1?'Sem 1':(s2?'Sem 2':'—'));
+    const alts = (typeof ALTS !== 'undefined' && ALTS[l] && ALTS[l][lvl]) ? ALTS[l][lvl] : [];
+    const cd = alts.length ? code + '/' + alts.map(a=>a.slice(-4)).join('/') : code;
     return `<div class="lvbtn ${on?'on '+kClass(lvl):''}" data-l="${l}" data-lvl="${lvl}">
-      <span class="n">Lv ${lvl}</span><span class="cd">${code}</span><span class="sem">${sem}</span></div>`;
+      <span class="n">Lv ${lvl}</span><span class="cd">${cd}</span><span class="sem">${sem}</span></div>`;
   }).join('');
   const recogOpts = (RECOG[l]||[]).map(([code,title,sem])=>
     `<option value="${code}" ${d.recognised===code?'selected':''}>${code} — ${title} (${sem})</option>`).join('');

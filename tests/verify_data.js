@@ -6,8 +6,8 @@ const path = require('path');
 const root = path.join(__dirname, '..');
 
 const dataJs = fs.readFileSync(path.join(root, 'checker_data.js'), 'utf8');
-eval(dataJs + ';globalThis.__d = { META, COURSES, SEM1, SEM2, RECOG };');
-const { META, COURSES, SEM1, SEM2, RECOG } = global.__d;
+eval(dataJs + ';globalThis.__d = { META, COURSES, SEM1, SEM2, RECOG, ALTS };');
+const { META, COURSES, SEM1, SEM2, RECOG, ALTS } = global.__d;
 
 const json = JSON.parse(fs.readFileSync(path.join(root, 'data', 'minor_availability.json'), 'utf8'));
 
@@ -25,10 +25,11 @@ for (const [lang, pairs] of Object.entries(COURSES)) {
   const s1 = new Set(entry.sem1.map(c => c.code));
   const s2 = new Set(entry.sem2.map(c => c.code));
   for (const [lvl, code] of pairs) {
-    if (s1.has(code) !== (SEM1[lang] || []).includes(lvl))
-      problems.push(`${lang} level ${lvl} (${code}): SEM1 tag disagrees with availability data`);
-    if (s2.has(code) !== (SEM2[lang] || []).includes(lvl))
-      problems.push(`${lang} level ${lvl} (${code}): SEM2 tag disagrees with availability data`);
+    const codes = [code, ...(((ALTS || {})[lang] || {})[lvl] || [])];
+    if (codes.some(cd => s1.has(cd)) !== (SEM1[lang] || []).includes(lvl))
+      problems.push(`${lang} level ${lvl} (${codes.join('/')}): SEM1 tag disagrees with availability data`);
+    if (codes.some(cd => s2.has(cd)) !== (SEM2[lang] || []).includes(lvl))
+      problems.push(`${lang} level ${lvl} (${codes.join('/')}): SEM2 tag disagrees with availability data`);
   }
 }
 

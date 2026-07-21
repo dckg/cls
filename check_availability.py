@@ -306,6 +306,11 @@ CHECKER_LEVELS = {
   'Malay':            [(1,'LAM1201'),(2,'LAM2201'),(3,'LAM3201')],
   'Vietnamese':       [(1,'LAV1201'),(2,'LAV2201')],
 }
+# Alternate courses that satisfy the same CLS level (officially not mutually
+# exclusive): either code fills the level.
+CHECKER_ALTS = {
+  'Japanese': {6: ['LAJ3204']},  # Business Japanese 2 also counts as Level 6
+}
 # Tracks where the Minor in Language Studies (CLS Level 6) is available,
 # i.e. where the checker offers the recognised-course "4 + 1" dropdown.
 LEVEL6_TRACKS = ['Chinese','French','German','Japanese','Korean','Spanish']
@@ -346,9 +351,13 @@ def sem_tag(code):
     if 2 in s: return 'Sem 2'
     return None
 
+def level_codes(l, lvl, code):
+    return [code] + CHECKER_ALTS.get(l, {}).get(lvl, [])
+
 courses_js = {l: [[lvl, code] for lvl, code in pairs] for l, pairs in CHECKER_LEVELS.items()}
-sem1_js = {l: [lvl for lvl, code in pairs if 1 in sems_of(code)] for l, pairs in CHECKER_LEVELS.items()}
-sem2_js = {l: [lvl for lvl, code in pairs if 2 in sems_of(code)] for l, pairs in CHECKER_LEVELS.items()}
+alts_js = {l: {str(lvl): codes for lvl, codes in m.items()} for l, m in CHECKER_ALTS.items()}
+sem1_js = {l: [lvl for lvl, code in pairs if any(1 in sems_of(cd) for cd in level_codes(l, lvl, code))] for l, pairs in CHECKER_LEVELS.items()}
+sem2_js = {l: [lvl for lvl, code in pairs if any(2 in sems_of(cd) for cd in level_codes(l, lvl, code))] for l, pairs in CHECKER_LEVELS.items()}
 
 recog_js = {}
 for track in LEVEL6_TRACKS:
@@ -373,6 +382,7 @@ def render_checker_js(checked):
         f"// Source: NUSMods API, {AY_SHORT}, checked {checked}.\n"
         f"const META = {js(meta)};\n"
         f"const COURSES = {js(courses_js)};\n"
+        f"const ALTS = {js(alts_js)};\n"
         f"const SEM1 = {js(sem1_js)};\n"
         f"const SEM2 = {js(sem2_js)};\n"
         f"const RECOG = {js(recog_js)};\n"

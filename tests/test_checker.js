@@ -112,6 +112,10 @@ check('recognised dropdown lists options from generated data',
   { Chinese: [1,2] },
   ['— none —', 'PH2242 — Philosophy of Language (Sem 2)']);
 
+check('Japanese Level 6 tile shows both course codes',
+  { Japanese: [1,2] },
+  ['LAJ3202/3204']);
+
 check('no recognised dropdown for a Level-4-only language',
   { Thai: [1] },
   ['Currently offered up to CLS Level 4'], ['— none —']);
