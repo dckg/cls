@@ -112,6 +112,7 @@
   .mbox .st{ font-size:12.5px; line-height:1.45; }
   .mbox .yes{ color:var(--green); font-weight:700; } .mbox .no{ color:var(--muted); }
   .mbox .met{ background:var(--green); color:#fff; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:1px 6px; border-radius:2px; white-space:nowrap; }
+  .mbox .notmet{ background:#c0392b; color:#fff; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:1px 6px; border-radius:2px; white-space:nowrap; }
   .tip{ margin-top:12px; font-size:12.5px; line-height:1.5; background:#fff; border-left:3px solid var(--indigo); border-radius:6px; padding:9px 12px; }
   .tip b{ color:var(--ink); }
   .fineprint{ margin-top:12px; font-size:11px; color:var(--muted); line-height:1.5; font-style:italic; }
@@ -336,7 +337,7 @@ function lsStatus(a){
   let best=null;
   a.langs.forEach(l=>{ const {count,max}=a.m[l]; const need=[]; if(max<6)need.push('reach CLS Level 6'); const c=(count>=5)?0:(5-count); if(c>0)need.push(`${c} more course${c>1?'s':''}`); if(!best||need.length<best.need.length)best={l,need}; });
   if(!best) return '<span class="no">Add a language to check.</span>';
-  return `<span class="no">Not yet.</span> Closest: <b>${best.l}</b> — ${best.need.length?best.need.join(' + '):'almost there'}.`;
+  return `<span class="notmet">Not met</span> Closest: <b>${best.l}</b> — ${best.need.length?best.need.join(' + '):'almost there'}.`;
 }
 function mcStatus(a){
   const hasL4=a.l4.length>0, hasL2=a.l2.length>0;
@@ -344,7 +345,7 @@ function mcStatus(a){
   const bits=[];
   bits.push(hasL4? `Level 4 language: <span class="yes">yes</span> (${a.l4.join('/')})` : 'Level 4 language: <span class="no">none yet</span> (a language from the nine, to Level 4)');
   bits.push(hasL2? `Level 2 language: <span class="yes">yes</span>` : 'Level 2 language: <span class="no">none yet</span> (any language, to Level 2)');
-  return bits.join('<br>');
+  return '<span class="notmet">Not met</span><br>' + bits.join('<br>');
 }
 function nextSteps(a){
   return `For the <b>LS minor</b>: one language to at least <b>CLS Level 6</b> (over 5 courses).<br>For the <b>MC minor</b>: one language to <b>CLS Level 4</b> (over 3 courses) and a different language to at least <b>CLS Level 2</b>.`;
