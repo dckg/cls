@@ -264,7 +264,11 @@ function renderResult(a){
   let cls,verdict,expl,below='';
   if(a.both){
     cls='both'; verdict='🎉 You qualify for BOTH minors!';
-    expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
+    if(a.lsLangs.length>=2){
+      expl=`Declare <b>Language Studies</b> in <b>BOTH</b> languages (double counting of LS Minor-recognised course), <b>OR</b> Language Studies in one <b>PLUS</b> Multilingual Communication in the other, with one as your CLS Level 4 language and the other as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
+    } else {
+      expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
+    }
   } else if(a.canLS && a.canMC){
     cls='either'; verdict='Either minor — but not both at once';
     expl='';

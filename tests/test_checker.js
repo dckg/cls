@@ -62,9 +62,16 @@ check('either + only Malay (not in the nine)',
   ['Either minor — but not both at once'],
   ['Quickest unlock']);
 
-check('Thai at Level 4 gives BOTH',
+check('Thai at Level 4 gives BOTH (single-LS wording)',
   { Chinese: [1,2,3,4,5,6], Thai: [1,2,3,4] },
-  ['You qualify for BOTH minors']);
+  ['You qualify for BOTH minors', 'Declare Language Studies in Chinese'],
+  ['BOTH languages']);
+
+check('two 4+1 languages give BOTH with dual-LS wording',
+  { Korean: {levels:[1,2,4,6], recog:'EL1101E'}, French: {levels:[1,3,4,6], recog:'EL1101E'} },
+  ['You qualify for BOTH minors',
+   'Declare Language Studies in BOTH languages',
+   'OR Language Studies in one PLUS Multilingual Communication in the other']);
 
 check('LS only (no second language) unchanged',
   { Chinese: [1,2,3,4,5,6] },
