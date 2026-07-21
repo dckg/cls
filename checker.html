@@ -316,7 +316,7 @@ function renderResult(a){
     below=`To hold both minors, your <b>CLS Level 4</b> language must be <b>different</b> from your <b>CLS Level 6</b> language.`;
   } else if(a.canLS){
     cls='one'; verdict='✓ Minor in Language Studies';
-    expl=`You meet Language Studies in <b>${a.lsLangs.join(', ')}</b>. To add <b>Multilingual Communication</b>, take a <i>different</i> language (from the nine) up to <b>CLS Level 4</b> — 3 courses — and your Level 6 language fills the Level 2 slot.`;
+    expl=`You meet Language Studies in <b>${a.lsLangs.join(', ')}</b>. To add <b>Multilingual Communication</b>, take a <i>different</i> language up to <b>CLS Level 4</b> — 3 courses — and your Level 6 language fills the Level 2 slot.`;
   } else if(a.canMC){
     cls='one'; verdict='✓ Minor in Multilingual Communication';
     expl=`You meet Multilingual Communication. To add <b>Language Studies</b>, take one language all the way to <b>CLS Level 6</b> (over 5 courses, or over 4 courses + 1 LS Minor-recognised course).`;
@@ -343,7 +343,7 @@ function mcStatus(a){
   const hasL4=a.l4.length>0, hasL2=a.l2.length>0;
   if(hasL4 && a.l2.some(b=>a.l4.some(x=>x!==b))) return `<span class="met">Met</span> — CLS Level 4 language (${a.l4.join('/')}) + a different CLS Level 2 language.`;
   const bits=[];
-  bits.push(hasL4? `Level 4 language: <span class="yes">yes</span> (${a.l4.join('/')})` : 'Level 4 language: <span class="no">none yet</span> (a language from the nine, to Level 4)');
+  bits.push(hasL4? `Level 4 language: <span class="yes">yes</span> (${a.l4.join('/')})` : 'Level 4 language: <span class="no">none yet</span> (a language to Level 4)');
   bits.push(hasL2? `Level 2 language: <span class="yes">yes</span>` : 'Level 2 language: <span class="no">none yet</span> (any language, to Level 2)');
   return '<span class="notmet">Not met</span><br>' + bits.join('<br>');
 }
