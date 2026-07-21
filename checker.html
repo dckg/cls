@@ -151,11 +151,10 @@
     </div>
 
     <div class="foot">
-      <div class="frow"><span class="flab">Guide status</span><span><b>Indicative only</b> — not an official eligibility decision; always confirm with CLS. Placement tests exempt prerequisites but do not waive units.</span></div>
-      <div class="frow"><span class="flab">Course data</span><span>Only courses listed as available in <span class="meta-ay">the current AY</span> on <b>nusmods.com</b> are shown (checked <span class="meta-checked">recently</span>). Semester tags show when each course runs; Semester 2 offerings can still change before ModReg (October–November).</span></div>
-      <div class="frow"><span class="flab">Languages</span><span><b>Language Studies</b> (to CLS Level 6): Chinese, French, German, Japanese, Korean, Spanish.<br><b>Multilingual Communication</b> — CLS Level 4 language: the six above plus Arabic, Bahasa Indonesia, Thai · CLS Level 2 (second) language only: Hindi, Malay, Vietnamese.</span></div>
-      <div class="frow"><span class="flab">Units</span><span>1 course = 4 units · up to 8 units may be double-counted between minors (NUS policy).</span></div>
-      <div class="frow"><span class="flab">More</span><span><a href="https://fass.nus.edu.sg/cls/minor-programmes"><b>fass.nus.edu.sg/cls/minor-programmes</b></a></span></div>
+      <div class="frow"><span class="flab">Status guide</span><span><b>Indicative only</b> — always confirm course availability with CLS.</span></div>
+      <div class="frow"><span class="flab">Timeline</span><span>Ensure the Minor is added to your Academic Plan Declarations by your fifth semester.</span></div>
+      <div class="frow"><span class="flab">Units</span><span>1 CLS course = 4 academic units. Up to 8 units may be double-counted between the LS Minor and the 2nd language for the MC Minor.</span></div>
+      <div class="frow"><span class="flab">More</span><span>Find out more at <a href="https://fass.nus.edu.sg/cls/minor-programmes"><b>fass.nus.edu.sg/cls/minor-programmes</b></a></span></div>
     </div>
   </div>
 </div>
@@ -313,7 +312,7 @@ function renderResult(a){
     <div class="mbox ls"><h4>Language Studies</h4><div class="st">${lsStatus(a)}</div></div>
     <div class="mbox mc"><h4>Multilingual Communication</h4><div class="st">${mcStatus(a)}</div></div>
   </div>`;
-  const fineprint = `<div class="fineprint">(Results based on the current offer of CLS courses, and may vary according to the availability of the listed courses in each AY and the condition that a prescribed number of enrolments is met in those courses.)</div>`;
+  const fineprint = `<div class="fineprint">(Results subject to the availability of listed courses each year, and the condition that the minimum prescribed enrolment numbers are met)</div>`;
   resultEl.innerHTML = `<div class="result ${cls}"><div class="verdict">${verdict}</div><div class="expl">${expl}</div>${detail}${fineprint}</div>`;
 }
 
@@ -334,7 +333,7 @@ function mcStatus(a){
   return bits.join('<br>');
 }
 function nextSteps(a){
-  return `Keep going! For <b>Language Studies</b>: one language to <b>CLS Level 6</b> (5 courses). For <b>Multilingual Communication</b>: one language (from the nine) to <b>CLS Level 4</b> <i>and</i> a different language to <b>CLS Level 2</b>.`;
+  return `For the <b>LS minor</b>: one language to at least <b>CLS Level 6</b> (over 5 courses).<br>For the <b>MC minor</b>: one language to <b>CLS Level 4</b> (over 3 courses) and a different language to at least <b>CLS Level 2</b>.`;
 }
 
 render();

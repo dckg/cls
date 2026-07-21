@@ -57,18 +57,18 @@ check('either + started Thai names Thai with 2 courses',
    'Quickest unlock based on what you’ve already studied',
    'Thai', '2 more courses (LAT3201, LAT3202)',
    'Chinese double-counting as your Level 2 language',
-   '(Results based on the current offer of CLS courses']);
+   '(Results subject to the availability of listed courses']);
 
 check('either + only Malay (not in the nine) stays generic',
   { Chinese: [1,2,3,4,5,6], Malay: [1,2] },
   ['Either minor — but not both at once',
-   '(Results based on the current offer of CLS courses'],
+   '(Results subject to the availability of listed courses'],
   ['Quickest unlock']);
 
 check('Thai at Level 4 gives BOTH',
   { Chinese: [1,2,3,4,5,6], Thai: [1,2,3,4] },
   ['You qualify for BOTH minors',
-   '(Results based on the current offer of CLS courses']);
+   '(Results subject to the availability of listed courses']);
 
 check('either + Thai lv1 only needs 3 more courses',
   { Chinese: [1,2,3,4,5,6], Thai: [1], Malay: [1,2] },
