@@ -51,15 +51,14 @@ function check(name, scenario, mustContain, mustNotContain = []) {
   if (!ok) { failures++; console.log('  got: ' + text.slice(0, 600)); }
 }
 
-check('either + started Thai names Thai with 2 courses',
+check('either — but not both: rule shown after the boxes, no unlock paragraph',
   { Chinese: [1,2,3,4,5,6], Thai: [1,2] },
   ['Either minor — but not both at once',
-   'Quickest unlock based on what you’ve already studied',
-   'Thai', '2 more courses (LAT3201, LAT3202)',
-   'Chinese double-counting as your Level 2 language',
-   '(Results subject to the availability of listed courses']);
+   'To hold both minors',
+   '(Results subject to the availability of listed courses'],
+  ['Quickest unlock']);
 
-check('either + only Malay (not in the nine) stays generic',
+check('either + only Malay (not in the nine)',
   { Chinese: [1,2,3,4,5,6], Malay: [1,2] },
   ['Either minor — but not both at once',
    '(Results subject to the availability of listed courses'],
@@ -69,15 +68,6 @@ check('Thai at Level 4 gives BOTH',
   { Chinese: [1,2,3,4,5,6], Thai: [1,2,3,4] },
   ['You qualify for BOTH minors',
    '(Results subject to the availability of listed courses']);
-
-check('either + Thai lv1 only needs 3 more courses',
-  { Chinese: [1,2,3,4,5,6], Thai: [1], Malay: [1,2] },
-  ['Either minor — but not both at once',
-   '3 more courses (LAT2201, LAT3201, LAT3202)']);
-
-check('either + two started candidates picks the closer (Spanish lv1-3)',
-  { Chinese: [1,2,3,4,5,6], Thai: [1], Spanish: [1,2,3], Malay: [1,2] },
-  ['1 more course (LAS3202)']);
 
 check('LS only (no second language) unchanged',
   { Chinese: [1,2,3,4,5,6] },
