@@ -90,6 +90,16 @@ check('not there yet',
   { Thai: [1] },
   ['Not there yet']);
 
+check('closest LS language is the nearest Level-6 track, not a Level-2-only one',
+  { Hindi: [1,2], Japanese: [1,2,3,4] },
+  ['Closest: Japanese', '1 more course'],
+  ['Closest: Hindi']);
+
+check('no Level-6-capable language selected: no bogus closest',
+  { Hindi: [1,2], Malay: [1,2] },
+  ['Needs a language offered to CLS Level 6'],
+  ['Closest:']);
+
 check('4+1 route: 4 Chinese courses incl Lv6 + recognised course = LS met',
   { Chinese: {levels:[3,4,5,6], recog:'PH2242'} },
   ['✓ Minor in Language Studies']);

@@ -333,10 +333,22 @@ function renderResult(a){
 
 function lsStatus(a){
   if(a.lsLangs.length) return `<span class="met">Met</span> in ${a.lsLangs.join(', ')} — 5 courses incl. CLS Level 6.`;
-  // nearest
+  // nearest: only languages actually offered to CLS Level 6, ranked by
+  // how many courses remain (4 + 1 route when a recognised course is chosen)
   let best=null;
-  a.langs.forEach(l=>{ const {count,max}=a.m[l]; const need=[]; if(max<6)need.push('reach CLS Level 6'); const c=(count>=5)?0:(5-count); if(c>0)need.push(`${c} more course${c>1?'s':''}`); if(!best||need.length<best.need.length)best={l,need}; });
-  if(!best) return '<span class="no">Add a language to check.</span>';
+  a.langs.forEach(l=>{
+    const maxOffered = COURSES[l][COURSES[l].length-1][0];
+    if(maxOffered < 6) return;
+    const {count,max} = a.m[l];
+    const target = studied[l].recognised ? 4 : 5;
+    const remaining = Math.max(target - count, max < 6 ? 1 : 0);
+    const need=[];
+    if(max < 6) need.push('reach CLS Level 6');
+    const cnum = Math.max(0, target - count);
+    if(cnum > 0) need.push(`${cnum} more course${cnum>1?'s':''}`);
+    if(!best || remaining < best.remaining) best={l,need,remaining};
+  });
+  if(!best) return '<span class="notmet">Not met</span> Needs a language offered to CLS Level 6.';
   return `<span class="notmet">Not met</span> Closest: <b>${best.l}</b> — ${best.need.length?best.need.join(' + '):'almost there'}.`;
 }
 function mcStatus(a){
