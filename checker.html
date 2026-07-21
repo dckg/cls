@@ -33,7 +33,9 @@
   .bicolor span{ flex:1; }
   .bicolor span:first-child{ background:var(--indigo); }
   .bicolor span:last-child{ background:var(--coral); }
-  .hero{ background:#fff; padding:18px 30px 4px; }
+  .hero{ background:#fff; padding:18px 30px 4px; position:relative; }
+  .back{ position:absolute; top:5px; left:30px; font-size:10px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); text-decoration:none; }
+  .back:hover{ color:var(--ink); }
   .eyebrow{ font-size:11.5px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--indigo); }
   h1{ font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:20px; line-height:1.08; letter-spacing:-.015em; margin:7px 0 6px; }
   .h1-note{ font-size:11px; font-weight:500; color:var(--muted); letter-spacing:0; white-space:nowrap; }
@@ -109,6 +111,7 @@
 
   @media (max-width:620px){
     .hero,.body,.foot{ padding-left:18px; padding-right:18px; }
+    .back{ left:18px; }
     .pcol{ padding:10px 8px 12px; }
     .lvbtn{ min-width:56px; }
     .masthead{ padding:6mm 6mm 5mm; }
@@ -131,9 +134,11 @@
     </div>
     <div class="bicolor"><span></span><span></span></div>
     <div class="hero">
+      <a class="back" href="./">← Back</a>
       <h1>CLS Minor Eligibility Checker <span class="h1-note">*valid for <span class="meta-ay">AY2026/27</span></span></h1>
       <p>Pick at least one language and its courses to check.</p>
     </div>
+    <div class="bicolor"><span></span><span></span></div>
 
     <div class="body">
       <div class="pick">
