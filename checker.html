@@ -264,7 +264,7 @@ function renderResult(a){
   if(a.langs.length===0){ resultEl.innerHTML=''; return; }
   let cls,verdict,expl,below='';
   if(a.both){
-    cls='both'; verdict='🎉 You qualify for BOTH minors!';
+    cls='both'; verdict='🎉 You qualify for <u>BOTH</u> minors!';
     if(a.lsLangs.length>=2){
       const uses41 = a.lsLangs.slice(0,2).every(l=>{
         const {count,max} = a.m[l];
@@ -275,7 +275,7 @@ function renderResult(a){
       expl=`Declare <b>Language Studies</b> in <b>${a.both.X}</b>, and <b>Multilingual Communication</b> with <b>${a.both.Z}</b> as your CLS Level 4 language and <b>${a.both.X}</b> as your CLS Level 2 language — its first 2 courses double-count (8&nbsp;units).`;
     }
   } else if(a.canLS && a.canMC){
-    cls='either'; verdict='Either minor — but not both at once';
+    cls='either'; verdict='<u>Either</u> minor — but not both at once';
     expl='';
     below=`To hold both minors, your <b>CLS Level 4</b> language must be <b>different</b> from your <b>CLS Level 6</b> language.`;
   } else if(a.canLS){
