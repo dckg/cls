@@ -97,6 +97,7 @@
   .coach-tip{ position:absolute; max-width:250px; background:#fff; border-radius:10px; padding:12px 14px; box-shadow:0 10px 30px -12px rgba(33,30,63,.7); }
   .coach-tip p{ font-size:13px; font-weight:500; line-height:1.45; margin-bottom:9px; }
   .coach-tip button{ background:var(--ink); color:#fff; border:none; border-radius:7px; padding:7px 14px; font-family:inherit; font-size:12px; font-weight:700; cursor:pointer; }
+  .coach-skip{ display:block; background:none !important; border:none; color:var(--muted) !important; font-size:11px !important; font-weight:600 !important; padding:8px 0 0 !important; text-decoration:underline; cursor:pointer; }
   .coach-tip::before{ content:""; position:absolute; width:12px; height:12px; background:#fff; transform:rotate(45deg); left:26px; }
   .coach-tip.below::before{ top:-6px; }
   .coach-tip.above::before{ bottom:-6px; }
@@ -240,7 +241,7 @@
 </div>
 <div class="coach" id="coach" hidden>
   <div class="coach-hole" id="coach-hole"></div>
-  <div class="coach-tip" id="coach-tip"><p id="coach-text"></p><button id="coach-next" type="button">Next</button></div>
+  <div class="coach-tip" id="coach-tip"><p id="coach-text"></p><button id="coach-next" type="button">Next</button><button class="coach-skip" id="coach-skip" type="button">Don’t show me again</button></div>
 </div>
 <div class="zoom-overlay" id="zoom">
   <div class="zoom-panel" id="zoom-panel" role="dialog" aria-modal="true">
@@ -306,12 +307,16 @@ try{
     function finishCoach(){
       coach.hidden = true;
       document.body.style.overflow = '';
-      try{ localStorage.setItem('clsCoachSeen','1'); }catch(e){}
       window.scrollTo({top:0});
     }
     coach.hidden = false;
     document.body.style.overflow = 'hidden';
     coach.addEventListener('click', nextStep);
+    document.getElementById('coach-skip').addEventListener('click', function(e){
+      e.stopPropagation();
+      try{ localStorage.setItem('clsCoachSeen','1'); }catch(err){}
+      finishCoach();
+    });
     nextStep();
   }
 }catch(e){}
