@@ -782,11 +782,6 @@
     "lang": true
    },
    {
-    "code": "LAH2201",
-    "title": "Hindi 2",
-    "lang": true
-   },
-   {
     "code": "HY1101E",
     "title": "Engaging Asia: A Global History",
     "lang": false
@@ -794,11 +789,6 @@
    {
     "code": "SN2213",
     "title": "South Asian Democracies - Violence, Conflict, and Hope",
-    "lang": false
-   },
-   {
-    "code": "SN2274",
-    "title": "South Asian Cultures: An Introduction",
     "lang": false
    },
    {
@@ -904,6 +894,11 @@
     "code": "LAH4202",
     "title": "Hindi 6",
     "lang": true
+   },
+   {
+    "code": "SN2274",
+    "title": "South Asian Cultures: An Introduction",
+    "lang": false
    },
    {
     "code": "SN2277",
@@ -1328,6 +1323,11 @@
     "lang": true
    },
    {
+    "code": "LAS4203",
+    "title": "Spanish 7 Language and Spanish Studies",
+    "lang": true
+   },
+   {
     "code": "EL1101E",
     "title": "The Nature of Language",
     "lang": false
@@ -1386,11 +1386,6 @@
    }
   ],
   "notOffered": [
-   {
-    "code": "LAS4203",
-    "title": "Spanish 7",
-    "lang": true
-   },
    {
     "code": "LAS4204",
     "title": "Spanish 8",
