@@ -207,8 +207,8 @@
     "lang": false
    },
    {
-    "code": "SE3233",
-    "title": "Martial Arts in Southeast Asia",
+    "code": "SE1101E",
+    "title": "The Lands Below the Winds: Southeast Asia in the World",
     "lang": false
    },
    {
@@ -241,6 +241,11 @@
    {
     "code": "SE2223",
     "title": "Doing Research in Southeast Asia",
+    "lang": false
+   },
+   {
+    "code": "SE3233",
+    "title": "Martial Arts in Southeast Asia",
     "lang": false
    },
    {
@@ -458,6 +463,11 @@
     "lang": true
    },
    {
+    "code": "LAF4203",
+    "title": "French Language and Society",
+    "lang": true
+   },
+   {
     "code": "PH2242",
     "title": "Philosophy of Language",
     "lang": false
@@ -494,11 +504,6 @@
    }
   ],
   "notOffered": [
-   {
-    "code": "LAF4203",
-    "title": "French Language and Society",
-    "lang": true
-   },
    {
     "code": "LAF4204",
     "title": "Francophone Studies in Context",
@@ -782,11 +787,6 @@
     "lang": true
    },
    {
-    "code": "LAH2201",
-    "title": "Hindi 2",
-    "lang": true
-   },
-   {
     "code": "HY1101E",
     "title": "Engaging Asia: A Global History",
     "lang": false
@@ -794,11 +794,6 @@
    {
     "code": "SN2213",
     "title": "South Asian Democracies - Violence, Conflict, and Hope",
-    "lang": false
-   },
-   {
-    "code": "SN2274",
-    "title": "South Asian Cultures: An Introduction",
     "lang": false
    },
    {
@@ -904,6 +899,11 @@
     "code": "LAH4202",
     "title": "Hindi 6",
     "lang": true
+   },
+   {
+    "code": "SN2274",
+    "title": "South Asian Cultures: An Introduction",
+    "lang": false
    },
    {
     "code": "SN2277",
@@ -1283,11 +1283,6 @@
     "lang": false
    },
    {
-    "code": "SE3233",
-    "title": "Martial Arts in Southeast Asia",
-    "lang": false
-   },
-   {
     "code": "EL1101E",
     "title": "The Nature of Language",
     "lang": false
@@ -1298,7 +1293,13 @@
     "lang": false
    }
   ],
-  "notOffered": []
+  "notOffered": [
+   {
+    "code": "SE3233",
+    "title": "Martial Arts in Southeast Asia",
+    "lang": false
+   }
+  ]
  },
  "Spanish": {
   "sem1": [
@@ -1325,6 +1326,11 @@
    {
     "code": "LAS4201",
     "title": "Spanish 5",
+    "lang": true
+   },
+   {
+    "code": "LAS4203",
+    "title": "Spanish 7 Language and Spanish Studies",
     "lang": true
    },
    {
@@ -1386,11 +1392,6 @@
    }
   ],
   "notOffered": [
-   {
-    "code": "LAS4203",
-    "title": "Spanish 7",
-    "lang": true
-   },
    {
     "code": "LAS4204",
     "title": "Spanish 8",
@@ -1533,11 +1534,6 @@
     "lang": false
    },
    {
-    "code": "SE3233",
-    "title": "Martial Arts in Southeast Asia",
-    "lang": false
-   },
-   {
     "code": "EL1101E",
     "title": "The Nature of Language",
     "lang": false
@@ -1582,6 +1578,11 @@
    {
     "code": "SE2229",
     "title": "Southeast Asia as a Field of Study",
+    "lang": false
+   },
+   {
+    "code": "SE3233",
+    "title": "Martial Arts in Southeast Asia",
     "lang": false
    }
   ]
@@ -1648,6 +1649,11 @@
    {
     "code": "SE2210",
     "title": "Popular Culture in Southeast Asia",
+    "lang": false
+   },
+   {
+    "code": "SE1101E",
+    "title": "The Lands Below the Winds: Southeast Asia in the World",
     "lang": false
    },
    {
