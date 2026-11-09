@@ -1,10 +1,10 @@
 // GENERATED FILE - do not edit by hand.
 // Regenerate with: python3 check_availability.py
-// Source: NUSMods API, AY2026/27, checked 21 Jul 2026.
+// Source: NUSMods API, AY2026/27, checked 9 Nov 2026.
 const META = {
   "ay": "AY2026/27",
   "acadYear": "2026-2027",
-  "checked": "21 Jul 2026"
+  "checked": "9 Nov 2026"
 };
 const COURSES = {
   "Arabic": [
@@ -321,8 +321,7 @@ const SEM1 = {
     4
   ],
   "Hindi": [
-    1,
-    2
+    1
   ],
   "Malay": [
     1,
@@ -363,7 +362,6 @@ const SEM2 = {
   "German": [
     1,
     2,
-    3,
     4,
     6
   ],
@@ -378,7 +376,6 @@ const SEM2 = {
   "Korean": [
     1,
     2,
-    3,
     4,
     6
   ],
@@ -416,11 +413,6 @@ const RECOG = {
     [
       "EL2101",
       "Structure of Sentences and Meanings",
-      "Sem 2"
-    ],
-    [
-      "GEC1001",
-      "Chinese Music, Language and Literature (in English)",
       "Sem 2"
     ],
     [
